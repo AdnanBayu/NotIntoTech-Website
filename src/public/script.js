@@ -1,4 +1,4 @@
-// ====== Navigation Animation ======
+// Navigation Animation
 const menu = document.querySelector('nav ul');
 const menuBtn = document.querySelector('.menu-open');
 const closeBtn = document.querySelector('.menu-close');

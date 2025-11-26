@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('components/head', { text: 'Profile-Not Into Tech' }) %>
+<body class="bg-[#154D41]">
+    
+    <!-- Content Wrapper -->
+    <div class="relative z-20 mt-[1.5em] mx-[1em] p-[0.5em]"> 
+        
+        <!-- Header Website -->
+        <section>
+            <%- include('components/header') %>
+        </section>
+
+        <!-- Main Content -->
+        <section>
+            <main>
+                <!-- main cta -->
+                <section>
+                    <div class="mt-25 mb-8">
+                        <h1 class="text-white text-4xl text-center font-bold leading-[1.2em] mt-[40px]">
+                            Request Data
+                            From Internet,
+                            <div class="w-[100px] bg-[#863687] hover:bg-[#4FE8C9] inline-block align-middle rounded-xl  transition ease-in">
+                                <h1 class="font-bold">Now</h1>
+                            </div>
+                        </h1>
+                    </div>
+                </section>
+                
+                <!-- request card -->
+                <section>
+                    <div class="mx-auto max-w-2xl relative z-10 rounded-xl bg-neutral-900 border-neutral-700 p-10">
+                        <!-- request form -->
+                        <form id="request-form">
+                            <div class="mb-4 sm:mb-8">
+                                <label for="request-name" class="block mb-2 text-sm font-medium text-white">Your name</label>
+                                <input type="text" id="request-name" name="request-name" class="block w-full sm:text-sm focus:border-blue-500 disabled:opacity-50 disabled:pointer-events-none bg-neutral-900 border-neutral-700 text-neutral-400 placeholder-neutral-500 focus:ring-neutral-600 py-2.5 sm:py-3 px-4" placeholder="Full name">
+                            </div>
+
+                            <div class="mb-4 sm:mb-8">
+                                <label for="request-email" class="block mb-2 text-sm font-medium text-white">Email address</label>
+                                <input type="email" id="request-email" name="request-email" class="block w-full rounded-lg sm:text-sm focus:border-blue-500 disabled:opacity-50 disabled:pointer-events-none bg-neutral-900 border-neutral-700 text-neutral-400 placeholder-neutral-500 focus:ring-neutral-600 py-2.5 sm:py-3 px-4" placeholder="Email address">
+                            </div>
+
+                            <div>
+                                <label for="request-text" class="block mb-2 text-sm font-medium text-white">Tell us your request</label>
+                                <div class="mt-1">
+                                    <textarea id="request-text" name="request-text" rows="3" class="block w-full rounded-lg sm:text-sm focus:border-blue-500 disabled:opacity-50 disabled:pointer-events-none bg-neutral-900 border-neutral-700 text-neutral-400 placeholder-neutral-500 focus:ring-neutral-600 py-2.5 sm:py-3 px-4" placeholder="Leave your comment here..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 grid">
+                                <button type="submit" class="w-full inline-flex justify-center items-center text-sm text-white font-medium rounded-lg border border-transparent bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none gap-x-2 py-3 px-4">Submit</button>
+                            </div>
+                        </form>
+                        <!-- end request form -->
+                    </div>
+                </section>
+            </main>
+        </section>
+
+        <!-- Footer Website -->
+        <section>
+            <%- include('components/footer') %>
+        </section>
+    
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+<div class="relative overflow-hidden">
+    <div class="w-full mx-auto px-4 text-white font-medium">
+        <!-- Scrolling container -->
+        <div class="flex animate-infinite-scroll overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]">
+
+            <div class="flex">
+                <div class="flex items-center justify-center mx-8">
+                    <p>Tech</p>
+                </div>
+                <div class="flex items-center justify-center mx-8">
+                    <p>*</p>
+                </div>
+                <div class="flex items-center justify-center mx-8">
+                    <p>Data</p>
+                </div>
+                <div class="flex items-center justify-center mx-8">
+                    <p>*</p>
+                </div>
+                <div class="flex items-center justify-center mx-8">
+                    <p>AI</p>
+                </div>
+                <div class="flex items-center justify-center mx-8">
+                    <p>*</p>
+                </div>
+                <div class="flex items-center justify-center mx-8">
+                    <p>Tech</p>
+                </div>
+                <div class="flex items-center justify-center mx-8">
+                    <p>*</p>
+                </div>
+            </div>
+            <div class="flex" aria-hidden="true">
+                <div class="flex items-center justify-center mx-8">
+                    <p>Tech</p>
+                </div>
+                <div class="flex items-center justify-center mx-8">
+                    <p>*</p>
+                </div>
+                <div class="flex items-center justify-center mx-8">
+                    <p>Data</p>
+                </div>
+                <div class="flex items-center justify-center mx-8">
+                    <p>*</p>
+                </div>
+                <div class="flex items-center justify-center mx-8">
+                    <p>AI</p>
+                </div>
+                <div class="flex items-center justify-center mx-8">
+                    <p>*</p>
+                </div>
+                <div class="flex items-center justify-center mx-8">
+                    <p>Tech</p>
+                </div>
+                <div class="flex items-center justify-center mx-8">
+                    <p>*</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+@keyframes infinite-scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+.animate-infinite-scroll {
+    animation: infinite-scroll 25s linear infinite;
+}
+
+.animate-infinite-scroll:hover {
+    animation-play-state: paused;
+}
+</style>

@@ -28,6 +28,7 @@ nav ul{
     }
 }
 
+/* Card Animation */
 .card{
     transition: .3s ease;
 }

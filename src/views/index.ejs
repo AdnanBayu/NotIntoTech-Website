@@ -1,14 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-<%- include('components/head', { title: 'Home - Not Into Tech' }) %>
-<body class="bg-[#0E0216]">
-    <!-- Background Color -->
-    <a href="#" class="hidden absolute z-10 md:flex">
-        <img src="image-assets/Background%20Gradient.svg" alt="background color" class="max-w-full"/>
-    </a>
-    
+<%- include('components/head', { text: 'Home-Not Into Tech' }) %>
+<body class="bg-[#154D41]">
+
     <!-- Content Wrapper -->
-    <div class="relative z-20 mt-[1.5em] mx-[1em] p-[0.5em]">
+    <div class="relative z-20 mt-[1.2em] mx-[1em] p-[0.5em]">
         
         <!-- Header Website -->
         <section>
@@ -19,17 +15,27 @@
         <section>
             <main>
                 <!-- website main cta -->
-                <div class="mt-52">
-                    <h1 class="text-white text-5xl text-center font-bold leading-[1.2em] mt-[40px]">
-                        Take a Coffee, Have Great
-                        <div class="w-[150px] h-[60px] bg-[#863687] hover:bg-[#4FE8C9] inline-block align-middle rounded-xl  transition ease-in">
-                            <h1 class="font-bold">NITe</h1>
-                        </div>
+                <div class="mt-44 px-10">
+                    <h1 class="text-white text-[4em] text-left font-bold leading-[1.2em] mt-[45px]">
+                        Good NITe fellas
                     </h1>
-                    <p class="text-center text-white leading-[1.5em] mt-3">
-                        Wonder how to start your tech journey? Join us explore tech world as NITe Owl.
+                    <p class="text-white text-left leading-[1.5em] mt-3">
+                        Grab your coffee and cure your confusion of tech industry with an<br>easy late night reading here.....
                     </p>
+                    <div class="mt-14">
+                        <%- include('components/button-hover-color', {text:'Read here', link:'/'}) %>
+                    </div>
                 </div>
+                
+                <!-- infinite-horizontal-scroll -->
+                <div class="mt-40">
+                    <%- include('components/infinite-horizontal-scroll') %>
+                </div>
+                <!-- end of infinite-horizontal-scroll -->
+
+                <!-- chatbot section -->
+                
+                <!-- end chatbot section -->
 
                 <!-- product section -->
                 <div>
