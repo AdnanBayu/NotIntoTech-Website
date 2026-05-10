@@ -19,6 +19,7 @@ Not Into Tech Website is a full-stack web application built with **Node.js + Exp
 | Templating | EJS |
 | Styling | Tailwind CSS |
 | Database | MongoDB (Atlas) + Supabase (PostgreSQL) |
+| Storage | Cloudflare R2 |
 | AI Chatbot | N8N Webhook |
 | Deployment | Vercel |
 
@@ -43,7 +44,7 @@ NotIntoTech-Website/
 │       ├── insightsRouter.js     # Insights/articles page
 │       ├── insightsApiRouter.js  # Articles REST API
 │       ├── aiRouter.js           # AI page
-│       ├── dataRouter.js         # Dataset page
+│       ├── datasetRouter.js      # Dataset page
 │       ├── profileRouter.js      # Profile page
 │       ├── feedbackformRouter.js # Feedback form page
 │       ├── requestRouter.js      # Request page
@@ -131,6 +132,14 @@ The project uses **two databases**:
 
 - **MongoDB** (via Mongoose) — used for user-related data and feedback forms.
 - **Supabase (PostgreSQL)** — used for storing and querying articles/insights with support for Tableau data visualization links.
+
+---
+
+## 📦 Storage
+
+The project uses **Cloudflare R2** for object storage:
+
+- **Cloudflare R2** — used for storing dataset resources and other large files, providing high-performance and cost-effective storage.
 
 ---
 

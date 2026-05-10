@@ -16,6 +16,44 @@ const ARTICLE_SELECT = 'id, title, slug, content, excerpt, category, tags, autho
 // PUBLIC API ROUTES (Read-only)
 // ============================================
 
+/**
+ * @swagger
+ * /api/insights:
+ *   get:
+ *     summary: Retrieve a list of published articles
+ *     tags: [Insights]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of articles per page
+ *     responses:
+ *       200:
+ *         description: A list of published articles
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                 pagination:
+ *                   type: object
+ *       500:
+ *         description: Internal server error
+ */
 // GET /api/insights
 router.get('/api/insights', async (req, res) => {
   try {
@@ -104,6 +142,61 @@ router.get('/api/insights/category/:category', async (req, res) => {
 // ADMIN API ROUTES (CRUD) - Protected by auth
 // ============================================
 
+/**
+ * @swagger
+ * /api/insights:
+ *   post:
+ *     summary: Create a new article (Admin only)
+ *     tags: [Insights]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - content
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Title of the article
+ *               content:
+ *                 type: string
+ *                 description: Main content of the article
+ *               category:
+ *                 type: string
+ *               excerpt:
+ *                 type: string
+ *               tags:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               author:
+ *                 type: string
+ *               tableauUrl:
+ *                 type: string
+ *               seoMetaDescription:
+ *                 type: string
+ *               seoKeywords:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               featuredImage:
+ *                 type: string
+ *                 description: URL for the featured image
+ *     responses:
+ *       201:
+ *         description: Article created successfully
+ *       400:
+ *         description: Validation error or article with this title already exists
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Failed to create article
+ */
 // POST /api/insights
 router.post(
   '/api/insights',
@@ -165,6 +258,41 @@ router.post(
   }
 );
 
+/**
+ * @swagger
+ * /api/insights-admin/all:
+ *   get:
+ *     summary: Retrieve a list of all articles including drafts (Admin only)
+ *     tags: [Insights]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of articles per page
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [published, draft]
+ *         description: Filter by status
+ *     responses:
+ *       200:
+ *         description: A list of articles
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Failed to fetch articles
+ */
 // GET /api/insights-admin/all
 router.get('/api/insights-admin/all', isAdmin, async (req, res) => {
   try {
@@ -202,6 +330,64 @@ router.get('/api/insights-admin/all', isAdmin, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/insights/{id}:
+ *   put:
+ *     summary: Update an existing article (Admin only)
+ *     tags: [Insights]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the article
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               content:
+ *                 type: string
+ *               category:
+ *                 type: string
+ *               excerpt:
+ *                 type: string
+ *               tags:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               author:
+ *                 type: string
+ *               tableauUrl:
+ *                 type: string
+ *               seoMetaDescription:
+ *                 type: string
+ *               seoKeywords:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               featuredImage:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Article updated successfully
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Article not found
+ *       500:
+ *         description: Failed to update article
+ */
 // PUT /api/insights/:id
 router.put(
   '/api/insights/:id',
@@ -252,6 +438,31 @@ router.put(
   }
 );
 
+/**
+ * @swagger
+ * /api/insights/{id}/publish:
+ *   post:
+ *     summary: Publish an article (Admin only)
+ *     tags: [Insights]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the article
+ *     responses:
+ *       200:
+ *         description: Article published successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Article not found
+ *       500:
+ *         description: Failed to publish article
+ */
 // POST /api/insights/:id/publish
 router.post('/api/insights/:id/publish', isAdmin, async (req, res) => {
   try {
@@ -282,6 +493,31 @@ router.post('/api/insights/:id/publish', isAdmin, async (req, res) => {
 });
 
 
+/**
+ * @swagger
+ * /api/insights/{id}/unpublish:
+ *   post:
+ *     summary: Unpublish an article (Admin only)
+ *     tags: [Insights]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the article
+ *     responses:
+ *       200:
+ *         description: Article unpublished successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Article not found
+ *       500:
+ *         description: Failed to unpublish article
+ */
 // POST /api/insights/:id/unpublish
 router.post('/api/insights/:id/unpublish', isAdmin, async (req, res) => {
   try {
@@ -310,6 +546,31 @@ router.post('/api/insights/:id/unpublish', isAdmin, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/insights/{id}:
+ *   delete:
+ *     summary: Delete an article (Admin only)
+ *     tags: [Insights]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the article
+ *     responses:
+ *       200:
+ *         description: Article deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Article not found
+ *       500:
+ *         description: Failed to delete article
+ */
 // DELETE /api/insights/:id
 router.delete('/api/insights/:id', isAdmin, async (req, res) => {
   try {

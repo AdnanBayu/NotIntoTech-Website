@@ -21,6 +21,8 @@
     "express-validator": "^7.3.1",
     "jsdom": "^23.0.0",
     "mongoose": "^8.19.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "tailwind-scrollbar": "^4.0.2",
     "tailwindcss": "^4.1.11"
   },
