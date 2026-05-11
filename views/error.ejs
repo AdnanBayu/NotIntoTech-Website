@@ -8,28 +8,74 @@
         <div class="relative z-20">
 
             <!-- Header Website -->
-            <section class="p-[0.5em]">
+            <section>
                 <%- include('components/header') %>
             </section>
 
             <!-- Main Content -->
             <section>
-                <main>
-                    <!-- main text -->
-                    <div class="mt-25 px-10 flex justify-center">
-                        <div class="max-w-2xl w-full text-left">
-                            <h1 class="text-white text-[3.5em] lg:text-[4.2em] font-bold leading-[1.2em]">
-                                Error
-                            </h1>
-                            <p class="text-white text-[1em] lg:text-[1.25em] leading-[1.5em] mt-3">
-                                Something’s wrong, try to contact NITE team
+                <canvas id="neuralCanvas" class="fixed top-0 left-0 w-full h-full z-0 opacity-60"></canvas>
+
+                <main
+                    class="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-12 pointer-events-none">
+                    <!-- Main Text -->
+                    <div class="text-center mb-16 pointer-events-auto relative">
+                        <h1
+                            class="text-[7rem] sm:text-[10rem] md:text-[14rem] font-black leading-none tracking-normal text-emerald-500/40 opacity-30 select-none">
+                            404
+                        </h1>
+                        <div class="-mt-6 sm:-mt-10 md:-mt-14 relative z-20 px-4">
+                            <h2 class="text-2xl sm:text-3xl md:text-5xl font-bold mb-3 text-white drop-shadow-lg">
+                                Page Not <span class="text-emerald-500 italic">Found</span>
+                            </h2>
+                            <p class="max-w-md mx-auto text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed">
+                                This directory is currently unreachable. <br class="hidden sm:block">
+                                Our models suggest returning to a known node below.
                             </p>
                         </div>
                     </div>
 
-                    <!-- background image -->
-                    <div class="fixed bottom-0">
-                        <img src="image-assets/Error Page Background.png" alt="error-bg" class="w-full mt-10" />
+                    <!-- Suggest Card -->
+                    <div
+                        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-5xl pointer-events-auto">
+
+                        <!-- Articles Card -->
+                        <a href="/insights"
+                            class="group relative p-6 md:p-8 rounded-2xl bg-[##010C13]/60 backdrop-blur-xl border border-[#154D41]/20 hover:border-[#154D41]/60 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_0_30px_-10px_rgba(21,77,65,0.5)]">
+                            <h3 class="text-lg md:text-xl font-bold text-white mb-2">Data Articles</h3>
+                            <p class="text-xs md:text-sm text-slate-500">Industry research and deep-dive analytical
+                                insights.</p>
+                        </a>
+
+                        <!-- Datasets Card -->
+                        <a href="/data"
+                            class="sm:col-span-2 md:col-span-1 group relative p-6 md:p-8 rounded-2xl bg-[##010C13]/60 backdrop-blur-xl border border-[#154D41]/20 hover:border-[#154D41]/60 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_0_30px_-10px_rgba(21,77,65,0.5)]">
+                            <h3 class="text-lg md:text-xl font-bold text-white mb-2">Datasets</h3>
+                            <p class="text-xs md:text-sm text-slate-500">Explore curated datasets ready for analysis and
+                                training.</p>
+                        </a>
+
+                        <!-- AI Development Card -->
+                        <a href="/ai"
+                            class="group relative p-6 md:p-8 rounded-2xl bg-[##010C13]/60 backdrop-blur-xl border border-[#154D41]/20 hover:border-[#154D41]/60 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_0_30px_-10px_rgba(21,77,65,0.5)]">
+                            <h3 class="text-lg md:text-xl font-bold text-white mb-2">Artificial Intelligence</h3>
+                            <p class="text-xs md:text-sm text-slate-500">Latest findings in neural networks and machine
+                                learning.</p>
+                        </a>
+
+
+                    </div>
+
+                    <!-- Back to Home -->
+                    <div class="mt-12 md:mt-16 pointer-events-auto">
+                        <a href="/"
+                            class="group flex items-center gap-3 text-emerald-500 font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] hover:text-emerald-300 transition-all duration-300">
+                            <span
+                                class="opacity-30 group-hover:opacity-100 transform group-hover:-translate-x-1 transition-all">&gt;</span>
+                            Back to Home
+                            <span
+                                class="opacity-30 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all">&lt;</span>
+                        </a>
                     </div>
                 </main>
             </section>
@@ -37,6 +83,110 @@
         </div>
 
         <script src="script.js"></script>
+        <script>
+            const canvas = document.getElementById('neuralCanvas');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            const mouse = { x: null, y: null };
+
+            const config = {
+                bgColor: '#010C13',
+                dotColor: 'rgba(21, 77, 65, 0.4)',
+                lineColor: 'rgba(21, 77, 65, 0.15)',
+                particleCount: 80,
+                connectionDist: 180,
+                mouseRadius: 150
+            };
+
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.x;
+                mouse.y = e.y;
+            });
+
+            window.addEventListener('resize', () => {
+                resize();
+            });
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                init();
+            }
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.vx = (Math.random() - 0.5) * 0.4;
+                    this.vy = (Math.random() - 0.5) * 0.4;
+                    this.radius = Math.random() * 2 + 1;
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < 0) this.x = canvas.width;
+                    if (this.x > canvas.width) this.x = 0;
+                    if (this.y < 0) this.y = canvas.height;
+                    if (this.y > canvas.height) this.y = 0;
+
+                    if (mouse.x && mouse.y) {
+                        const dx = mouse.x - this.x;
+                        const dy = mouse.y - this.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < config.mouseRadius) {
+                            this.x += dx * 0.01;
+                            this.y += dy * 0.01;
+                        }
+                    }
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = config.dotColor;
+                    ctx.fill();
+                }
+            }
+
+            function init() {
+                particles = [];
+                const count = window.innerWidth < 768 ? 40 : config.particleCount;
+                for (let i = 0; i < count; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            function animate() {
+                ctx.fillStyle = config.bgColor;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < config.connectionDist) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(21, 77, 65, ${1 - dist / config.connectionDist})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(animate);
+            }
+
+            resize();
+            animate();
+        </script>
 
     </body>
 
