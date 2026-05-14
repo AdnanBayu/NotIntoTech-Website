@@ -6,5 +6,12 @@ P	: 0.9em - 0.8em
 Button	: 0.8em
 
 Color Palette
-Green	: 154D41
-Blue	: 010C13
+Dark Purple     : 261459
+Light Purple    : 7449F6
+Dark Violet     : 2C1238
+Light Violet    : 8742A7
+Dark Teal       : 154D41
+Light Teal      : 52D9B7
+Dark Blue       : 153053
+Light Blue      : 5E9CF8
+Deep Dark Blue  : 010C13

@@ -1,5 +1,17 @@
 @import "tailwindcss";
 
+@theme {
+    --color-dark-purple: #261459;
+    --color-light-purple: #7449F6;
+    --color-dark-violet: #2C1238;
+    --color-light-violet: #8742A7;
+    --color-dark-teal: #154D41;
+    --color-light-teal: #52D9B7;
+    --color-dark-blue: #153053;
+    --color-light-blue: #5E9CF8;
+    --color-deep-dark-blue: #010C13;
+}
+
 /* Font Section */
 * {
     font-family: 'Raleway';

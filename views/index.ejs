@@ -2,7 +2,7 @@
 <html lang="en">
 <%- include('components/head', { text: 'Not Into Tech' }) %>
 
-    <body class="bg-[#010C13]">
+    <body class="bg-deep-dark-blue">
 
         <!-- Content Wrapper -->
         <div class="relative z-20">
@@ -17,37 +17,32 @@
                 <main>
 
                     <!-- website main cta -->
-                    <section class="relative min-h-screen flex items-center justify-center bg-[#010C13] pt-20 mt-5">
+                    <section class="relative min-h-screen flex items-center justify-center pt-20 mt-5">
 
                         <!-- background elements -->
                         <div class="absolute inset-0 z-0">
                             <!-- radial glow for depth -->
                             <div
-                                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[800px] aspect-square bg-[#154D41]/30 rounded-full blur-[120px] pointer-events-none">
+                                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[800px] aspect-square bg-dark-teal/30 rounded-full blur-[120px] pointer-events-none">
                             </div>
                             <!-- grid pattern -->
                             <div class="absolute inset-0 opacity-40 pointer-events-none"></div>
                         </div>
 
                         <div class="relative z-10 max-w-4xl mx-auto px-6 flex flex-col items-center text-center">
-                            <!-- key message text -->
-                            <div class="flex items-center gap-3 mb-8 animate-fade-in">
-                                <p class="text-white/80 text-[0.9em] font-medium uppercase">
-                                    Intelligence. Infrastructure. Impact.
-                                </p>
-                            </div>
-
                             <!-- main heading -->
                             <div class="relative inline-block">
                                 <h1
                                     class="text-[2em] md:text-[3em] text-white leading-tight font-bold tracking-tight mb-8">
-                                    Hi
-                                    <span class="text-[#154D41] italic">Not Into Tech</span>
-                                    peeps
+                                    Not Into
+                                    <span class="text-light-teal hover:text-light-violet italic">Tech?</span>
                                 </h1>
+                                <h2 class="text-xl md:text-2xl text-white leading-tight font-bold tracking-tight mb-8">
+                                    No Problem, We Are!
+                                </h2>
 
-                                <!-- floating icon 1 -->
-                                <div class="absolute -top-12 -left-40 p-3 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 rotate-[-12deg] animate-pulse hidden md:block"
+                                <!-- floating icon -->
+                                <div class="absolute -top-8 -right-30 p-3 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 rotate-[-12deg] animate-pulse hidden md:block"
                                     style="animation-duration: 5s;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -59,35 +54,19 @@
                                         <line x1="14" y1="2" x2="14" y2="4" />
                                     </svg>
                                 </div>
-
-                                <!-- floating icon 2 -->
-                                <div
-                                    class="absolute -bottom-0 -right-40 p-3 bg-white/5 backdrop-blur-md rounded-full border border-white/10 rotate-[15deg] animate-pulse hidden md:block">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="text-white w-5 h-5">
-                                        <path
-                                            d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
-                                        <path d="m5 3 1 1" />
-                                        <path d="m19 19 1 1" />
-                                        <path d="m5 19 1-1" />
-                                        <path d="m19 3 1-1" />
-                                    </svg>
-                                </div>
                             </div>
 
                             <h3
                                 class="text-white/80 text-[0.9em] md:text-[1em] max-w-2xl leading-relaxed font-light mb-12">
-                                <span class="text-white font-medium">Not Into Tech? </span>
-                                We are. We translate complex architectures into
-                                <span class="text-white font-medium">high-stakes strategic clarity </span>
-                                for the world's most ambitious leaders.
+                                We know you’re focused on leading. That’s why we translate complex technical
+                                architectures into clear, high-stakes strategies for the world's most ambitious leaders.
                             </h3>
 
                             <!-- CTA buttons -->
                             <div class="flex flex-col md:flex-row gap-5 w-full md:w-auto items-center">
-                                <%- include('components/button-white', {text:'Read insights', link:'/insights'}) %>
-                                    <%- include('components/button-white', {text:'See products', link:'#products'}) %>
+                                <%- include('components/button-white', {text:'Read Our Insights', link:'/insights'}) %>
+                                    <%- include('components/button-white', {text:'See Our Products', link:'#products'})
+                                        %>
                             </div>
 
                             <!-- Scroll Down Indicator -->
@@ -116,49 +95,51 @@
                             <!-- marketing text -->
                             <div>
                                 <h2 class="text-white text-[2em] mb-6">
-                                    Automating <br>
-                                    <span class="text-[#154D41]">Sovereign Advantage.</span>
+                                    Making Your Business Smarter,<br>
+                                    <span class="text-dark-teal">Automatically</span>
                                 </h2>
                                 <h3 class="text-white text-[1em] mb-8">
-                                    We don't just "deploy AI." We architect private, secure agentic systems that
-                                    function as an extension of your board of directors, synthesizing data into
-                                    actionable leverage.
+                                    We don't just "install AI." We build private, secure digital systems that act
+                                    like a specialized extension of your leadership team. We take your messy data and
+                                    turn it into clear plans you can actually use to get ahead.
                                 </h3>
                                 <ul class="space-y-4">
                                     <li class="flex items-start gap-3">
-                                        <div class="bg-[#154D41]/20 p-3 rounded-xl h-fit">
+                                        <div class="bg-dark-teal/20 p-3 rounded-xl h-fit">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                 viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round"
-                                                class="text-[#154D41] w-6 h-6">
+                                                class="text-dark-teal w-6 h-6">
                                                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
                                                 <path d="m9 12 2 2 4-4" />
                                             </svg>
                                         </div>
                                         <div>
                                             <span class="text-[0.9em] font-bold text-white">
-                                                Zero-Trust Intelligence:
+                                                Keeping Your Secrets Safe
                                             </span>
                                             <p class="text-[0.9em] text-white">
-                                                Your proprietary IP remains entirely isolated and local.
+                                                With our Zero-Trust Intelligence, your private business information
+                                                stays entirely isolated and local—just the way it should be.
                                             </p>
                                         </div>
                                     </li>
                                     <li class="flex items-start gap-3">
-                                        <div class="bg-[#154D41]/20 p-3 rounded-xl h-fit">
+                                        <div class="bg-dark-teal/20 p-3 rounded-xl h-fit">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                 viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round"
-                                                class="text-[#154D41] w-6 h-6">
+                                                class="text-dark-teal w-6 h-6">
                                                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
                                             </svg>
                                         </div>
                                         <div>
                                             <span class="text-[0.9em] font-bold text-white">
-                                                Alpha Generation:
+                                                Finding Your Next Big Win
                                             </span>
                                             <p class="text-[0.9em] text-white">
-                                                Using predictive modeling to identify market inefficiencies.
+                                                Using predictive modeling to spot market opportunities that others might
+                                                miss, giving you a serious competitive edge.
                                             </p>
                                         </div>
                                     </li>
@@ -174,21 +155,21 @@
 
                             <div class="text-center max-w-2xl mx-auto mb-16">
                                 <h2 class="text-[2em] text-white mb-4">
-                                    The Architecture Suite
+                                    Tools for Transformation Leaders
                                 </h2>
                                 <h3 class="text-white text-[1em]">
-                                    Bespoke technical frameworks designed for the 1% of enterprises that define the
-                                    market.
+                                    Offering specialized technical frameworks designed specifically for the top 1% of
+                                    enterprises that lead the market.
                                 </h3>
                             </div>
 
                             <div class="grid md:grid-cols-3 gap-8">
                                 <!-- product 1 -->
                                 <div
-                                    class="group border border-7 border-[#010C13] hover:border-[#154D41] hover:scale-105 transition-all bg-[#fcfcfc] relative overflow-hidden p-8">
+                                    class="group border border-7 hover:border-dark-teal hover:scale-105 transition-all bg-[#fcfcfc] relative overflow-hidden p-8">
                                     <div class="flex flex-row items-center gap-4">
                                         <div
-                                            class="w-12 h-12 bg-[#154D41]/10 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                                            class="w-12 h-12 bg-dark-teal/10 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                 viewBox="0 0 24 24" fill="none" stroke="#154D41" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round">
@@ -196,25 +177,25 @@
                                                 <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
                                             </svg>
                                         </div>
-                                        <h3 class="text-[1em] font-bold text-[#010C13] mb-4">
-                                            Insights
+                                        <h3 class="text-[1em] font-bold text-deep-dark-blue mb-4">
+                                            Actionable Insights
                                         </h3>
                                     </div>
                                     <p class="text-slate-500 text-[0.9em] leading-relaxed mb-6">
-                                        Tech industry data driven insights that transforms fragmented information into
-                                        actionable insights.
+                                        We take scattered industry data and transform it into clear, helpful advice that
+                                        helps you make better moves.
                                     </p>
                                     <a href="/insights"
-                                        class="text-[#154D41] text-[0.8em] font-bold tracking-widest uppercase flex items-center gap-2 hover:text-[#154D41]/50 transition-all">
-                                        View Insights <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                                        class="text-dark-teal text-[0.8em] font-bold tracking-widest uppercase flex items-center gap-2 hover:text-dark-teal/50 transition-all">
+                                        Read Insights <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                     </a>
                                 </div>
                                 <!-- product 2 -->
                                 <div
-                                    class="group border border-7 border-[#010C13] hover:border-[#154D41] hover:scale-105 transition-all bg-[#fcfcfc] relative overflow-hidden p-8">
+                                    class="group border border-7 hover:border-dark-teal hover:scale-105 transition-all bg-[#fcfcfc] relative overflow-hidden p-8">
                                     <div class="flex flex-row items-center gap-4">
                                         <div
-                                            class="w-12 h-12 bg-[#154D41]/10 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                                            class="w-12 h-12 bg-dark-teal/10 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                 viewBox="0 0 24 24" fill="none" stroke="#154D41" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round">
@@ -224,25 +205,25 @@
                                                 <line x1="12" y1="22.08" x2="12" y2="12" />
                                             </svg>
                                         </div>
-                                        <h3 class="text-[1em] font-bold text-[#010C13] mb-4">
-                                            Dataset
+                                        <h3 class="text-[1em] font-bold text-deep-dark-blue mb-4">
+                                            Powerful Datasets
                                         </h3>
                                     </div>
                                     <p class="text-slate-500 text-[0.9em] leading-relaxed mb-6">
-                                        Collection of datasets with various categories to help insights generation and
-                                        decision making for a corporates or personal project.
+                                        Access a massive collection of data to help your company or personal projects
+                                        make smarter decisions.
                                     </p>
                                     <a href="/data"
-                                        class="text-[#154D41] text-[0.8em] font-bold tracking-widest uppercase flex items-center gap-2 hover:text-[#154D41]/50 transition-all">
-                                        View Dataset <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                                        class="text-dark-teal text-[0.8em] font-bold tracking-widest uppercase flex items-center gap-2 hover:text-dark-teal/50 transition-all">
+                                        Download Datasets <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                     </a>
                                 </div>
                                 <!-- product 3 -->
                                 <div
-                                    class="group border border-7 border-[#010C13] hover:border-[#154D41] hover:scale-105 transition-all bg-[#fcfcfc] relative overflow-hidden p-8">
+                                    class="group border border-7 hover:border-dark-teal hover:scale-105 transition-all bg-[#fcfcfc] relative overflow-hidden p-8">
                                     <div class="flex flex-row items-center gap-4">
                                         <div
-                                            class="w-12 h-12 bg-[#154D41]/10 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                                            class="w-12 h-12 bg-dark-teal/10 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                 viewBox="0 0 24 24" fill="none" stroke="#154D41" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round">
@@ -252,16 +233,16 @@
                                                     d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
                                             </svg>
                                         </div>
-                                        <h3 class="text-[1em] font-bold text-[#010C13] mb-4">
+                                        <h3 class="text-[1em] font-bold text-deep-dark-blue mb-4">
                                             Artificial Intelligence
                                         </h3>
                                     </div>
                                     <p class="text-slate-500 text-[0.9em] leading-relaxed mb-6">
-                                        Latest artificial intelligence models and applications developed by our team,
-                                        including but not limited to agentic AI, generative AI, and many more.
+                                        Get access to the newest artificial intelligence models built by our team,
+                                        including smart digital agents and creative AI tools.
                                     </p>
                                     <a href="/coming-soon"
-                                        class="text-[#154D41] text-[0.8em] font-bold tracking-widest uppercase flex items-center gap-2 hover:text-[#154D41]/50 transition-all">
+                                        class="text-deep-dark-blue text-[0.8em] font-bold tracking-widest uppercase flex items-center gap-2 hover:text-dark-teal/50 transition-all">
                                         View AI <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                     </a>
                                 </div>
@@ -272,7 +253,7 @@
 
                     <!-- partnership section -->
                     <section id="partners"
-                        class="bg-gradient-to-br from-[#154D41] to-[#010C13] text-white overflow-hidden relative py-24">
+                        class="bg-gradient-to-br from-dark-teal to-deep-dark-blue text-white overflow-hidden relative py-24">
 
                         <!-- background elements -->
                         <div class="absolute inset-0 pointer-events-none opacity-20">
@@ -285,33 +266,33 @@
                                     Exclusive Strategic Alliances.
                                 </h2>
                                 <p class="text-slate-300 text-[0.9em] leading-relaxed mb-12">
-                                    We do not "accept clients." We form alliances with organizations that recognize the
-                                    terminal risks of technical stagnation.
+                                    We don’t just take "clients"—we form partnerships with organizations that
+                                    understand that staying still in tech is a major risk.
                                 </p>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12 mb-12">
                                     <div class="border-l border-white/20 pl-6">
                                         <p class="font-bold text-[0.9em] mb-2">Early Access</p>
                                         <p class="text-slate-400 text-[0.9em]">
-                                            Get early access to our latest research and data analysis.
+                                            Be the first to see our latest research and data analysis.
                                         </p>
                                     </div>
                                     <div class="border-l border-white/20 pl-6">
                                         <p class="font-bold text-[0.9em] mb-2">Brainstorm Session</p>
                                         <p class="text-slate-400 text-[0.9em]">
-                                            Joint ventures designed to pioneer the next generation of industry
-                                            standards.
+                                            Join us for joint ventures designed to set the new standards for your
+                                            industry
                                         </p>
                                     </div>
                                     <div class="border-l border-white/20 pl-6">
-                                        <p class="font-bold text-[0.9em] mb-2">Strategy Transformation</p>
+                                        <p class="font-bold text-[0.9em] mb-2">Complete Transformation</p>
                                         <p class="text-slate-400 text-[0.9em]">
-                                            Total modernization of the digital core with a focus on long-term
-                                            sustainability.
+                                            We provide a total modernization of your digital core, focusing on making
+                                            your business successful for the long haul.
                                         </p>
                                     </div>
                                 </div>
                                 <a href="/profile">
-                                    <%- include('components/button-white', {text:'Become partner', link:'/profile'}) %>
+                                    <%- include('components/button-white', {text:'Become Partner', link:'/profile'}) %>
                                 </a>
                             </div>
                         </div>
@@ -324,22 +305,22 @@
                             <div class="grid md:grid-cols-2 gap-16">
                                 <div>
                                     <h2 class="text-[2em] text-white mb-6">
-                                        Discretion &
-                                        <br><span class="text-[#154D41]">Precision</span>
+                                        Built with
+                                        <br><span class="text-dark-teal">Precision</span>
                                     </h2>
                                     <h3 class="text-white/80 text-[1em] mb-8">
-                                        We value precise feedback. Whether you are a client, partner, or researcher,
-                                        your insights drive our technical evolution.
+                                        We value your vision. Whether you are a partner or a researcher, your
+                                        feedback is what helps us evolve and stay at the cutting edge.
                                     </h3>
                                     <div class="space-y-6">
 
                                         <div class="flex items-center gap-4">
                                             <div
-                                                class="w-14 h-14 bg-white/5 flex items-center justify-center rounded-2xl group-hover:bg-[#154D41]/20 transition-colors">
+                                                class="w-14 h-14 bg-white/5 flex items-center justify-center rounded-2xl group-hover:bg-dark-teal/20 transition-colors">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="text-[#154D41] w-6 h-6">
+                                                    class="text-dark-teal w-6 h-6">
                                                     <rect width="20" height="16" x="2" y="4" rx="2" />
                                                     <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                                                 </svg>
@@ -347,7 +328,7 @@
                                             <div>
                                                 <div
                                                     class="text-[0.9em] uppercase text-slate-400 font-bold tracking-widest">
-                                                    Inquiries
+                                                    Reach out at
                                                 </div>
                                                 <div class="font-medium text-white/80">
                                                     team@notintotech.web.id
@@ -357,11 +338,11 @@
 
                                         <div class="flex items-center gap-4">
                                             <div
-                                                class="w-14 h-14 bg-white/5 flex items-center justify-center rounded-2xl group-hover:bg-[#154D41]/20 transition-colors">
+                                                class="w-14 h-14 bg-white/5 flex items-center justify-center rounded-2xl group-hover:bg-dark-teal/20 transition-colors">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="text-[#154D41] w-6 h-6">
+                                                    class="text-dark-teal w-6 h-6">
                                                     <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                                                     <circle cx="12" cy="10" r="3" />
                                                 </svg>
@@ -369,7 +350,7 @@
                                             <div>
                                                 <div
                                                     class="text-[0.9em] uppercase text-slate-400 font-bold tracking-widest">
-                                                    Presence
+                                                    Find us in
                                                 </div>
                                                 <div class="font-medium text-white/80">Surabaya • Indonesia
                                                 </div>
