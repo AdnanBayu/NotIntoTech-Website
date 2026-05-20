@@ -1,25 +1,40 @@
 const express = require('express');
 const router = express.Router();
-const supabase = require('../database/supabaseClient'); // Add Supabase client
+const { prisma } = require('../database/prismaClient');
 
-router.get('/data', async (req, res) => {
+router.get('/dataset', async (req, res) => {
     try {
-        // Fetch datasets from Supabase
-        const { data: datasets, error } = await supabase
-            .from('datasets')
-            .select('*')
-            .order('created_at', { ascending: false });
+        const page = parseInt(req.query.page) || 1;
+        const limit = 9;
+        const skip = (page - 1) * limit;
 
-        if (error) {
-            console.error('Error fetching datasets from Supabase:', error);
-            // Render with empty array if there's an error
-            res.render('page-dataset', { datasets: [], message: null, error: 'Failed to load datasets' });
-        } else {
-            res.render('page-dataset', { datasets, message: null, error: null });
-        }
+        const [datasets, count] = await Promise.all([
+            prisma.datasets.findMany({
+                orderBy: { created_at: 'desc' },
+                skip,
+                take: limit,
+            }),
+            prisma.datasets.count(),
+        ]);
+
+        res.render('page-dataset', {
+            datasets: datasets || [],
+            pagination: {
+                page,
+                pages: Math.ceil((count || 0) / limit),
+                total: count || 0,
+            },
+            message: null,
+            error: null
+        });
     } catch (err) {
         console.error('Unexpected error in dataset route:', err);
-        res.render('page-dataset', { datasets: [], message: null, error: 'Failed to load datasets' });
+        res.render('page-dataset', {
+            datasets: [],
+            pagination: { page: 1, pages: 0, total: 0 },
+            message: null,
+            error: 'Failed to load datasets'
+        });
     }
 });
 

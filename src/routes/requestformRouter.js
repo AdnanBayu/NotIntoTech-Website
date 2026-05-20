@@ -2,6 +2,39 @@ const express = require('express');
 const User = require('../model/request-model');
 const router = express.Router();
 
+/**
+ * @swagger
+ * /request-form:
+ *   post:
+ *     summary: Submit a data request
+ *     tags: [Forms]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - request-name
+ *               - request-email
+ *               - request-text
+ *             properties:
+ *               request-name:
+ *                 type: string
+ *                 description: Name of the requester
+ *               request-email:
+ *                 type: string
+ *                 format: email
+ *                 description: Email of the requester
+ *               request-text:
+ *                 type: string
+ *                 description: Description of the data request
+ *     responses:
+ *       200:
+ *         description: Request sent successfully (renders page)
+ *       500:
+ *         description: Error sending request (renders page with error)
+ */
 router.post('/request-form', async (req, res) => {
     try {
         console.log('Received request data:', req.body);

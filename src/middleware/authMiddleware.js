@@ -1,6 +1,5 @@
-/*
- * Simple admin authentication middleware
-*/
+// Admin authentication middleware
+
 const isAdmin = (req, res, next) => {
   const adminToken = process.env.ADMIN_TOKEN;
   const authHeader = req.headers['authorization'];
@@ -8,7 +7,7 @@ const isAdmin = (req, res, next) => {
   if (!authHeader || !authHeader.startsWith('Bearer')) {
     return res.status(401).json({
       success: false,
-      error: 'Unauthorized: Admin token required'
+      error: 'No privillege'
     });
   }
 
@@ -17,7 +16,7 @@ const isAdmin = (req, res, next) => {
   if (token !== adminToken) {
     return res.status(403).json({
       success: false,
-      error: 'Forbidden: Invalid admin token'
+      error: 'Wrong auth token'
     });
   }
 

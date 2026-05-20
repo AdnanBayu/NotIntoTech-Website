@@ -1,20 +1,17 @@
+// Backend router for article api
+
 const express = require('express');
 const router = express.Router();
-const supabase = require('../database/supabaseClient');
+const { prisma } = require('../database/prismaClient');
 const { isAdmin } = require('../middleware/authMiddleware');
 const sanitizeArticle = require('../middleware/sanitizeArticle');
-const { 
-  validateArticleCreate, 
-  validateArticleUpdate, 
-  handleValidationErrors 
+const {
+  validateArticleCreate,
+  validateArticleUpdate,
+  handleValidationErrors
 } = require('../middleware/validateArticle');
 
-// Standardized select query with aliases to maintain compatibility
-const ARTICLE_SELECT = 'id, title, slug, content, excerpt, category, tags, author, featuredImage:featured_image, seoMetaDescription:seo_meta_description, seoKeywords:seo_keywords, status, tableauUrl:tableau_url, views, publishedAt:published_at, createdAt:created_at, updatedAt:updated_at';
-
-// ============================================
 // PUBLIC API ROUTES (Read-only)
-// ============================================
 
 /**
  * @swagger
@@ -61,21 +58,15 @@ router.get('/api/insights', async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
-    const { count, error: countError } = await supabase
-      .from('articles')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'published');
-
-    if (countError) throw countError;
-
-    const { data: articles, error } = await supabase
-      .from('articles')
-      .select(ARTICLE_SELECT)
-      .eq('status', 'published')
-      .order('published_at', { ascending: false })
-      .range(skip, skip + limit - 1);
-
-    if (error) throw error;
+    const [articles, count] = await Promise.all([
+      prisma.articles.findMany({
+        where: { status: 'published' },
+        orderBy: { published_at: 'desc' },
+        skip,
+        take: limit,
+      }),
+      prisma.articles.count({ where: { status: 'published' } }),
+    ]);
 
     res.json({
       success: true,
@@ -93,23 +84,53 @@ router.get('/api/insights', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/insights/{slug}:
+ *   get:
+ *     summary: Retrieve a single published article by slug
+ *     tags: [Insights]
+ *     parameters:
+ *       - in: path
+ *         name: slug
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The URL slug of the article
+ *     responses:
+ *       200:
+ *         description: A single article with incremented view count
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/Article'
+ *       404:
+ *         description: Article not found
+ *       500:
+ *         description: Internal server error
+ */
 // GET /api/insights/:slug
 router.get('/api/insights/:slug', async (req, res) => {
   try {
-    const { data: article, error } = await supabase
-      .from('articles')
-      .select(ARTICLE_SELECT)
-      .eq('slug', req.params.slug)
-      .eq('status', 'published')
-      .single();
+    const article = await prisma.articles.findFirst({
+      where: { slug: req.params.slug, status: 'published' },
+    });
 
-    if (error || !article) {
+    if (!article) {
       return res.status(404).json({ success: false, error: 'Article not found' });
     }
 
     // Increment views
     const newViews = (article.views || 0) + 1;
-    await supabase.from('articles').update({ views: newViews }).eq('id', article.id);
+    await prisma.articles.update({
+      where: { id: article.id },
+      data: { views: newViews },
+    });
     article.views = newViews;
 
     res.json({ success: true, data: article });
@@ -119,17 +140,43 @@ router.get('/api/insights/:slug', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/insights/category/{category}:
+ *   get:
+ *     summary: Retrieve published articles filtered by category
+ *     tags: [Insights]
+ *     parameters:
+ *       - in: path
+ *         name: category
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The category name to filter by
+ *     responses:
+ *       200:
+ *         description: A list of articles in the specified category
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Article'
+ *       500:
+ *         description: Internal server error
+ */
 // GET /api/insights/category/:category
 router.get('/api/insights/category/:category', async (req, res) => {
   try {
-    const { data: articles, error } = await supabase
-      .from('articles')
-      .select(ARTICLE_SELECT)
-      .eq('category', req.params.category)
-      .eq('status', 'published')
-      .order('published_at', { ascending: false });
-
-    if (error) throw error;
+    const articles = await prisma.articles.findMany({
+      where: { category: req.params.category, status: 'published' },
+      orderBy: { published_at: 'desc' },
+    });
 
     res.json({ success: true, data: articles });
   } catch (error) {
@@ -138,9 +185,7 @@ router.get('/api/insights/category/:category', async (req, res) => {
   }
 });
 
-// ============================================
-// ADMIN API ROUTES (CRUD) - Protected by auth
-// ============================================
+// ADMIN API ROUTES - Secured by auth
 
 /**
  * @swagger
@@ -217,17 +262,16 @@ router.post(
         .substring(0, 100);
 
       // Check slug uniqueness
-      const { data: existingArticle } = await supabase.from('articles').select('id').eq('slug', slug).single();
+      const existingArticle = await prisma.articles.findUnique({ where: { slug } });
       if (existingArticle) {
-        return res.status(400).json({ 
-          success: false, 
-          error: 'An article with this title already exists' 
+        return res.status(400).json({
+          success: false,
+          error: 'An article with this title already exists'
         });
       }
 
-      const { data: article, error } = await supabase
-        .from('articles')
-        .insert([{
+      const article = await prisma.articles.create({
+        data: {
           title,
           slug,
           content,
@@ -240,16 +284,13 @@ router.post(
           seo_keywords: seoKeywords || [],
           featured_image: featuredImage || null,
           status: 'draft',
-        }])
-        .select(ARTICLE_SELECT)
-        .single();
+        },
+      });
 
-      if (error) throw error;
-
-      res.status(201).json({ 
-        success: true, 
+      res.status(201).json({
+        success: true,
         message: 'Article created successfully',
-        data: article 
+        data: article
       });
     } catch (error) {
       console.error('Error creating article:', error);
@@ -301,23 +342,17 @@ router.get('/api/insights-admin/all', isAdmin, async (req, res) => {
     const status = req.query.status;
     const skip = (page - 1) * limit;
 
-    let query = supabase.from('articles').select('*', { count: 'exact' });
-    if (status) {
-      query = query.eq('status', status);
-    }
-    
-    // Get count first
-    const { count, error: countError } = await query;
-    if (countError) throw countError;
+    const where = status ? { status } : {};
 
-    // Get data
-    let dataQuery = supabase.from('articles').select(ARTICLE_SELECT).order('created_at', { ascending: false }).range(skip, skip + limit - 1);
-    if (status) {
-      dataQuery = dataQuery.eq('status', status);
-    }
-
-    const { data: articles, error } = await dataQuery;
-    if (error) throw error;
+    const [articles, count] = await Promise.all([
+      prisma.articles.findMany({
+        where,
+        orderBy: { created_at: 'desc' },
+        skip,
+        take: limit,
+      }),
+      prisma.articles.count({ where }),
+    ]);
 
     res.json({
       success: true,
@@ -399,8 +434,8 @@ router.put(
     try {
       const updates = { ...req.body };
       delete updates.status; // Prevent status change via PUT
-      
-      // Map camelCase back to snake_case for Supabase
+
+      // Map camelCase to snake_case
       const updatePayload = {};
       if (updates.title !== undefined) updatePayload.title = updates.title;
       if (updates.content !== undefined) updatePayload.content = updates.content;
@@ -413,23 +448,21 @@ router.put(
       if (updates.seoKeywords !== undefined) updatePayload.seo_keywords = updates.seoKeywords;
       if (updates.featuredImage !== undefined) updatePayload.featured_image = updates.featuredImage;
 
-      updatePayload.updated_at = new Date().toISOString();
+      updatePayload.updated_at = new Date();
 
-      const { data: article, error } = await supabase
-        .from('articles')
-        .update(updatePayload)
-        .eq('id', req.params.id)
-        .select(ARTICLE_SELECT)
-        .single();
+      const article = await prisma.articles.update({
+        where: { id: req.params.id },
+        data: updatePayload,
+      });
 
-      if (error || !article) {
+      if (!article) {
         return res.status(404).json({ success: false, error: 'Article not found' });
       }
 
-      res.json({ 
-        success: true, 
+      res.json({
+        success: true,
         message: 'Article updated successfully',
-        data: article 
+        data: article
       });
     } catch (error) {
       console.error('Error updating article:', error);
@@ -466,25 +499,23 @@ router.put(
 // POST /api/insights/:id/publish
 router.post('/api/insights/:id/publish', isAdmin, async (req, res) => {
   try {
-    const { data: article, error } = await supabase
-      .from('articles')
-      .update({ 
-        status: 'published', 
-        published_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', req.params.id)
-      .select(ARTICLE_SELECT)
-      .single();
+    const article = await prisma.articles.update({
+      where: { id: req.params.id },
+      data: {
+        status: 'published',
+        published_at: new Date(),
+        updated_at: new Date(),
+      },
+    });
 
-    if (error || !article) {
+    if (!article) {
       return res.status(404).json({ success: false, error: 'Article not found' });
     }
 
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       message: 'Article published successfully',
-      data: article 
+      data: article
     });
   } catch (error) {
     console.error('Error publishing article:', error);
@@ -521,24 +552,22 @@ router.post('/api/insights/:id/publish', isAdmin, async (req, res) => {
 // POST /api/insights/:id/unpublish
 router.post('/api/insights/:id/unpublish', isAdmin, async (req, res) => {
   try {
-    const { data: article, error } = await supabase
-      .from('articles')
-      .update({ 
+    const article = await prisma.articles.update({
+      where: { id: req.params.id },
+      data: {
         status: 'draft',
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', req.params.id)
-      .select(ARTICLE_SELECT)
-      .single();
+        updated_at: new Date(),
+      },
+    });
 
-    if (error || !article) {
+    if (!article) {
       return res.status(404).json({ success: false, error: 'Article not found' });
     }
 
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       message: 'Article unpublished successfully',
-      data: article 
+      data: article
     });
   } catch (error) {
     console.error('Error unpublishing article:', error);
@@ -574,19 +603,16 @@ router.post('/api/insights/:id/unpublish', isAdmin, async (req, res) => {
 // DELETE /api/insights/:id
 router.delete('/api/insights/:id', isAdmin, async (req, res) => {
   try {
-    const { data: article, error } = await supabase
-      .from('articles')
-      .delete()
-      .eq('id', req.params.id)
-      .select('id')
-      .single();
+    const article = await prisma.articles.delete({
+      where: { id: req.params.id },
+    });
 
-    if (error || !article) {
+    if (!article) {
       return res.status(404).json({ success: false, error: 'Article not found' });
     }
 
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       message: 'Article deleted successfully',
       data: { deletedId: article.id }
     });

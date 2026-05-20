@@ -16,3 +16,4 @@ Thumbs.db
 
 example_usage/
 documentation_file/
+/src/generated/prisma

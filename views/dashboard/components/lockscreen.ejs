@@ -1,0 +1,201 @@
+<!-- Lock Screen Overlay -->
+
+<!-- Background blur -->
+<div id="lock-screen" class="
+  fixed inset-0 z-40 
+  bg-[#010C13]/90 backdrop-blur-md 
+  flex items-center justify-center 
+  transition-all duration-300 
+  hidden
+  ">
+
+  <!-- Lock box -->
+  <div class="
+    bg-neutral-900/80 border border-white/10 shadow-2xl
+    p-8 mx-4
+    rounded-3xl max-w-md w-full backdrop-blur-xl 
+    relative overflow-hidden group
+    ">
+
+    <!-- Header -->
+    <div class="text-center mb-6">
+      <!-- Lock icon -->
+      <div class="
+      inline-flex rounded-2xl p-3 mb-4 
+      bg-white/5 border border-white/10 
+      text-[#8EF0DD]
+      ">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z">
+          </path>
+        </svg>
+      </div>
+      <!-- Subtitle text -->
+      <h2 class="text-2xl font-extrabold tracking-tight">Not Into Tech Admin</h2>
+      <p class="text-white/60 text-sm mt-2">Please enter your admin token to gain access</p>
+    </div>
+
+    <!-- Login form -->
+    <form id="auth-form" onsubmit="handleAuth(event)">
+      <div class="space-y-4">
+
+        <div>
+          <!-- Input token text -->
+          <label for="admin-token" class="
+            block mb-2
+            text-xs font-semibold uppercase tracking-wider text-white/50 
+            ">
+            Access Token
+          </label>
+          <div class="relative">
+            <!-- Token input zone -->
+            <input type="password" id="admin-token" required class="
+              w-full rounded-xl px-4 py-3
+              bg-black/40 border border-white/10
+              text-white placeholder-white/30 
+              focus:outline-none focus:border-[#8EF0DD] focus:ring-1 focus:ring-[#8EF0DD] transition-all
+              " placeholder="Enter Token">
+            <!-- Token visibility button -->
+            <button type="button" onclick="toggleTokenVisibility()" class="
+              absolute inset-y-0 right-0 pr-3 
+              flex items-center 
+              text-white/40 
+              transition hover:text-white
+              ">
+              <svg id="eye-icon" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit token button -->
+        <button type="submit" class="
+          w-full rounded-xl py-3 
+          bg-[#8EF0DD] shadow-md
+          text-[#154D41] font-bold 
+          transition duration-300 transform
+          hover:bg-[#8EF0DD]/90 active:scale-95
+          ">
+          Unlock Dashboard
+        </button>
+
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<script>
+  let adminToken = '';
+
+  // Check auth token on load
+  document.addEventListener("DOMContentLoaded", () => {
+    adminToken = localStorage.getItem('admin_token');
+    if (adminToken) {
+      showDashboard();
+    } else {
+      document.getElementById('lock-screen').classList.remove('hidden');
+    }
+
+    // Set up Drag and Drop event listeners on zones if helper is available
+    if (typeof setupDragAndDrop === 'function') {
+      setupDragAndDrop('ds-cover-dropzone', 'ds-cover-file', 'ds-cover-url', 'ds-cover-status', 'dataset');
+      setupDragAndDrop('ds-file-dropzone', 'ds-data-file', 'ds-file-url', 'ds-file-status', 'dataset');
+      setupDragAndDrop('art-image-dropzone', 'art-image-file', 'art-image-url', 'art-image-status', 'article');
+    }
+  });
+
+  // Toggle password visibility on lock screen
+  function toggleTokenVisibility() {
+    const input = document.getElementById('admin-token');
+    const icon = document.getElementById('eye-icon');
+    if (!input || !icon) return;
+
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />`;
+    } else {
+      input.type = 'password';
+      icon.innerHTML = `
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+      `;
+    }
+  }
+
+  // Auth Form submission
+  function handleAuth(event) {
+    event.preventDefault();
+    const token = document.getElementById('admin-token').value.trim();
+    if (!token) return;
+
+    adminToken = token;
+    localStorage.setItem('admin_token', token);
+
+    // Attempt showing dashboard
+    showDashboard();
+  }
+
+  function showDashboard() {
+    // Hide lock screen
+    const lockScreen = document.getElementById('lock-screen');
+    if (!lockScreen) return;
+
+    lockScreen.classList.add('opacity-0');
+    setTimeout(() => {
+      lockScreen.classList.add('hidden');
+
+      // Show content
+      const content = document.getElementById('dashboard-content');
+      if (content) {
+        content.classList.remove('hidden');
+        setTimeout(() => {
+          content.classList.remove('opacity-10');
+          content.classList.add('opacity-100');
+        }, 50);
+      }
+
+      // Fetch Initial Data if fetch methods exist
+      if (typeof fetchDatasets === 'function') fetchDatasets();
+      if (typeof fetchArticles === 'function') fetchArticles();
+    }, 300);
+  }
+
+  function logout() {
+    localStorage.removeItem('admin_token');
+    adminToken = '';
+
+    // Hide content
+    const content = document.getElementById('dashboard-content');
+    if (content) {
+      content.classList.remove('opacity-100');
+      content.classList.add('opacity-10');
+    }
+
+    setTimeout(() => {
+      if (content) {
+        content.classList.add('hidden');
+      }
+
+      // Clear forms
+      const authForm = document.getElementById('auth-form');
+      if (authForm) authForm.reset();
+
+      // Show lock screen
+      const lockScreen = document.getElementById('lock-screen');
+      if (lockScreen) {
+        lockScreen.classList.remove('hidden');
+        setTimeout(() => lockScreen.classList.remove('opacity-0'), 50);
+      }
+    }, 300);
+
+    if (typeof showToast === 'function') {
+      showToast('Successfully disconnected.', 'success');
+    }
+  }
+</script>

@@ -1,0 +1,147 @@
+<!-- Toast Notification Container -->
+
+<div id="toast-container" class="
+fixed top-24 right-6 z-50
+flex fle
+x-col gap-3
+max-w-sm w-full
+"></div>
+
+<script>
+  // Helper: Toast Notifications
+  function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+
+    const isSuccess = type === 'success';
+    const borderClass = isSuccess ? 'border-emerald-500/30 bg-emerald-950/20' : 'border-red-500/30 bg-red-950/20';
+    const iconColor = isSuccess ? 'text-emerald-400' : 'text-red-400';
+    const iconSvg = isSuccess
+      ? '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>'
+      : '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+
+    toast.className = `flex items-center gap-3 p-4 border rounded-2xl backdrop-blur-xl text-sm font-medium shadow-lg transform transition-all duration-300 translate-x-20 opacity-0 ${borderClass}`;
+    toast.innerHTML = `
+      <span class="${iconColor}">${iconSvg}</span>
+      <span class="text-white/90">${message}</span>
+    `;
+
+    container.appendChild(toast);
+
+    // Animate entry
+    setTimeout(() => {
+      toast.classList.remove('translate-x-20', 'opacity-0');
+    }, 50);
+
+    // Remove after 4 seconds
+    setTimeout(() => {
+      toast.classList.add('translate-x-20', 'opacity-0');
+      setTimeout(() => toast.remove(), 300);
+    }, 4000);
+  }
+
+  // Trigger local input selection
+  function triggerFileInput(id) {
+    document.getElementById(id).click();
+  }
+
+  // Universal File Uploader using Fetch AJAX
+  function handleFileUpload(fileInput, urlTargetId, statusSpanId, uploadType = 'dataset') {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const statusSpan = document.getElementById(statusSpanId);
+    statusSpan.innerText = `Uploading: ${file.name}...`;
+    statusSpan.className = "text-xs text-[#8EF0DD] font-bold";
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    fetch(`/api/r2upload?type=${uploadType}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${adminToken}`
+      },
+      body: formData
+    })
+      .then(res => {
+        if (!res.ok) {
+          if (res.status === 403 || res.status === 401) {
+            logout();
+            throw new Error('Access denied. Token is invalid or expired.');
+          }
+          return res.json().then(data => { throw new Error(data.error || 'Upload failed') });
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (data.success) {
+          // Populate the text URL input
+          document.getElementById(urlTargetId).value = data.fileUrl;
+          statusSpan.innerText = `Uploaded: ${file.name} (100%)`;
+          statusSpan.className = "text-xs text-emerald-400 font-bold";
+          showToast(`File "${file.name}" uploaded successfully.`, 'success');
+        } else {
+          throw new Error(data.error || 'Upload failed');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        statusSpan.innerText = "Upload failed. Try again.";
+        statusSpan.className = "text-xs text-red-500 font-bold";
+        showToast(err.message, 'error');
+      });
+  }
+
+  // Drag & Drop configuration
+  function setupDragAndDrop(dropzoneId, inputId, urlInputId, statusId, uploadType = 'dataset') {
+    const dropzone = document.getElementById(dropzoneId);
+    const input = document.getElementById(inputId);
+    if (!dropzone || !input) return;
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.add('border-[#8EF0DD]', 'bg-[#8EF0DD]/5');
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('border-[#8EF0DD]', 'bg-[#8EF0DD]/5');
+      }, false);
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files.length) {
+        input.files = files;
+        handleFileUpload(input, urlInputId, statusId, uploadType);
+      }
+    });
+  }
+
+  // Utility: HTML Escaping
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function escapeQuote(str) {
+    if (!str) return '';
+    return str
+      .replace(/\\/g, '\\\\')
+      .replace(/'/g, "\\'")
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '\\r');
+  }
+</script>
