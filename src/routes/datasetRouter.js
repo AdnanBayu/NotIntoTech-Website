@@ -17,7 +17,7 @@ router.get('/dataset', async (req, res) => {
             prisma.datasets.count(),
         ]);
 
-        res.render('page-dataset', {
+        res.render('datasets/page-dataset', {
             datasets: datasets || [],
             pagination: {
                 page,
@@ -29,7 +29,7 @@ router.get('/dataset', async (req, res) => {
         });
     } catch (err) {
         console.error('Unexpected error in dataset route:', err);
-        res.render('page-dataset', {
+        res.render('datasets/page-dataset', {
             datasets: [],
             pagination: { page: 1, pages: 0, total: 0 },
             message: null,

@@ -19,7 +19,7 @@ router.get('/insights', async (req, res) => {
       prisma.articles.count({ where: { status: 'published' } }),
     ]);
 
-    res.render('page-insights', {
+    res.render('insights/page-insights', {
       articles: articles || [],
       pagination: {
         page,
@@ -29,7 +29,7 @@ router.get('/insights', async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching insights list:', error);
-    res.render('page-insights', {
+    res.render('insights/page-insights', {
       articles: [],
       pagination: { page: 1, pages: 0, total: 0 },
     });
@@ -59,7 +59,7 @@ router.get('/insights/:slug', async (req, res) => {
 
     article.views = newViews;
 
-    res.render('insights-detail', { article });
+    res.render('insights/insights-detail', { article });
   } catch (error) {
     console.error('Error fetching insight single:', error);
     res.status(500).render('error', {

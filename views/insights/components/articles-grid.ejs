@@ -1,0 +1,46 @@
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-20 mx-10">
+    <% if (articles && articles.length > 0) { %>
+        <% articles.forEach(article => { %>
+            <a href="/insights/<%= article.slug %>" class="group block">
+                <div
+                    class="h-full flex flex-col bg-[#010C13] bg-opacity-5 backdrop-blur-sm rounded-lg hover:bg-opacity-10 border border-white border-opacity-10 hover:border-[#8EF0DD] hover:scale-110 overflow-hidden transition-all duration-300 p-6">
+                    <!-- Title -->
+                    <h3
+                        class="text-white text-[1.2em] font-bold line-clamp-2 group-hover:text-[#8EF0DD] transition-colors mb-3">
+                        <%= article.title %>
+                    </h3>
+
+                    <!-- Category -->
+                    <div class="mb-4">
+                        <span
+                            class="inline-block bg-[#8EF0DD] text-[#154D41] text-[0.9em] font-semibold rounded-full px-3 py-1">
+                            <%= article.category || 'Article' %>
+                        </span>
+                    </div>
+
+                    <!-- Sinopsis -->
+                    <p class="text-gray-300 text-[0.9em] line-clamp-3 flex-grow mb-4">
+                        <%= article.excerpt || article.content.substring(0, 150) %>...
+                    </p>
+
+                    <!-- Meta Info -->
+                    <div
+                        class="flex justify-between text-[0.7em] text-gray-400 border-t border-white border-opacity-10 pt-4">
+                        <span>
+                            <%= new Date(article.published_at ||
+                                article.created_at).toLocaleDateString('en-US', {
+                                year: 'numeric' , month: 'short' , day: 'numeric' }) %>
+                        </span>
+                        <span>
+                            <%= article.views || 0 %> views
+                        </span>
+                    </div>
+                </div>
+            </a>
+        <% }) %>
+    <% } else { %>
+        <div class="col-span-full text-center text-white/50">
+            <p>No insights available right now.</p>
+        </div>
+    <% } %>
+</div>

@@ -99,7 +99,6 @@
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
-    --color-light-purple: #7449F6;
     --color-dark-teal: #154D41;
     --color-light-teal: #52D9B7;
     --color-light-blue: #5E9CF8;

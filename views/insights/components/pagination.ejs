@@ -1,0 +1,18 @@
+<!-- Pagination -->
+<% if (pagination && pagination.pages > 1) { %>
+    <div class="flex justify-center gap-2 mb-12">
+        <% for (let i = 1; i <= pagination.pages; i++) { %>
+            <% if (i === pagination.page) { %>
+                <button
+                    class="rounded-lg bg-[#8EF0DD] text-[#154D41] font-semibold px-4 py-2">
+                    <%= i %>
+                </button>
+            <% } else { %>
+                <a href="/insights?page=<%= i %>"
+                    class="rounded-lg bg-white bg-opacity-10 text-white hover:bg-opacity-20 transition-all px-4 py-2">
+                    <%= i %>
+                </a>
+            <% } %>
+        <% } %>
+    </div>
+<% } %>

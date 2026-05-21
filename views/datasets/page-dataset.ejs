@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../components/head', { text: 'Data' }) %>
+
+    <body class="bg-[#010C13]">
+
+        <!-- Content Wrapper -->
+        <div class="relative z-20">
+
+            <!-- Header Website -->
+            <section>
+                <%- include('../components/header') %>
+            </section>
+
+            <!-- Main Content -->
+            <section>
+                <main>
+                    <!-- Welcome Text -->
+                    <header class="max-w-6xl mx-auto mt-25 mb-12 px-10">
+                        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                            <div>
+                                <h1 class="text-[2em] md:text-[3em] font-extrabold text-white tracking-tight">
+                                    The Datasets
+                                </h1>
+                                <p class="max-w-2xl text-white/80 mt-3 text-[0.9em]">
+                                    Datasets compiled from internet using data mining scraping technique, you can use
+                                    this datasets for your Artificial Intelligence or business analysis project.
+                                </p>
+                            </div>
+                            <div class="flex flex-col gap-2 border-l border-white/10 pl-8">
+                                <p class="text-[0.9em] md:text-[1em] uppercase tracking-widest text-white font-bold">
+                                    Total Datasets
+                                </p>
+                                <p class="text-[1em] md:text-[2em] font-bold text-white">
+                                    <%= datasets.length %>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="mt-6 flex justify-center md:justify-start">
+                            <%- include('../components/button-white', {text:'Request Dataset', link:'/request'}) %>
+                        </div>
+                    </header>
+
+                    <!-- Main Content -->
+                    
+                    <!-- Featured Dataset -->
+                    <% if (datasets && datasets.length> 0) { %>
+                        <%- include('./components/featured-dataset', {datasets: datasets}) %>
+                    <% } %>
+
+                    <!-- Dataset Card Grid -->
+                    <%- include('./components/datasets-grid', {datasets: datasets}) %>
+
+                    <!-- Pagination -->
+                    <%- include('./components/pagination', {pagination: pagination}) %>
+                </main>
+            </section>
+
+            <!-- Footer Website -->
+            <section>
+                <%- include('../components/footer') %>
+            </section>
+
+        </div>
+
+        <script src="script.js"></script>
+
+    </body>
+
+</html>
