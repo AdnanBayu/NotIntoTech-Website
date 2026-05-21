@@ -5,7 +5,7 @@
   "main": "server-local.js",
   "scripts": {
     "build": "npx @tailwindcss/cli -i ./src/public/main.css -o ./src/public/output.css",
-    "vercel-build": "prisma generate && npm run build",
+    "vercel-build": "prisma generate",
     "dev:css": "npx @tailwindcss/cli -i ./src/public/main.css -o ./src/public/output.css --watch",
     "dev:server": "nodemon server-local.js",
     "dev": "concurrently \"npm run dev:css\" \"npm run dev:server\"",
