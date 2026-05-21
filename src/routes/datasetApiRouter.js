@@ -78,13 +78,14 @@ router.get('/api/datasets', async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching datasets:', error);
-    // res.status(500).json({ success: false, error: 'Failed to fetch datasets' });
     res.status(500).json({
-      success: false,
-      error: error.message,
-      code: error.errorCode,
-      meta: error.meta,
-    })
+      success: false, error: 'Failed to fetch datasets',
+    });
+    // expose error message for debugging
+    // res.status(500).json({
+    //   success: false,
+    //   error: error.message,
+    // })
   }
 });
 

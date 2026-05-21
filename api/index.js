@@ -25,6 +25,14 @@ swaggerSetup(app);
 app.use('/', chatbotApiRouter);
 app.use('/', router);
 
+app.get('/debug-env', (req, res) => {
+  const url = process.env.DATABASE_URL;
+  res.json({
+    exists: !!url,
+    startsCorrectly: url?.startsWith('postgresql://') || url?.startsWith('postgres://'),
+    preview: url ? url.substring(0, 30) + '...' : 'MISSING'
+  });
+});
 
 app.use((req, res) => {
     res.status(404).redirect('/error');
