@@ -4,12 +4,13 @@
   "description": "This is repository for Not Into Tech website as digital platform. The website will be utilized for organization branding and releasing products.",
   "main": "server-local.js",
   "scripts": {
-    "vercel-build": "npm run prisma generate",
     "dev:css": "npx @tailwindcss/cli -i ./src/public/main.css -o ./src/public/output.css --watch",
     "dev:server": "nodemon server-local.js",
     "dev": "concurrently \"npm run dev:css\" \"npm run dev:server\"",
-    "build": "npm run prisma generate && node server.js",
-    "postinstall": "npm run prisma generate"
+    
+    "vercel-build": "prisma generate",
+    "postinstall": "prisma generate",
+    "build": "prisma generate && node server.js"
   },
   "author": "",
   "license": "ISC",
