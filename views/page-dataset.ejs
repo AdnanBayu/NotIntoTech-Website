@@ -16,8 +16,8 @@
             <section>
                 <main>
                     <!-- Welcome Text -->
-                    <header class="mt-25 mb-12 px-10">
-                        <div class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-6">
+                    <header class="max-w-6xl mx-auto mt-25 mb-12 px-10">
+                        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                             <div>
                                 <h1 class="text-[2em] md:text-[3em] font-extrabold text-white tracking-tight">
                                     The Datasets
@@ -41,8 +41,10 @@
                         </div>
                     </header>
 
-                    <!-- Featured Spotlight -->
+                    <!-- Main Content -->
                     <% if (datasets && datasets.length> 0) { %>
+                        
+                        <!-- Featured Spotlight -->
                         <% const latestDataset=datasets[0]; %>
                             <a href="<%= latestDataset.file_url %>" target="_blank" rel="noopener noreferrer"
                                 class="px-10 mb-12 block group">
@@ -89,66 +91,63 @@
                             </a>
                             <% } %>
 
-                                <!-- Dataset Cards -->
-                                <section>
-                                    <!-- Grid -->
-                                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 my-20 mx-10">
-                                        <% if (datasets && datasets.length> 0) { %>
-                                            <% datasets.forEach(function(dataset) { %>
-                                                <!-- Card -->
-                                                <div
-                                                    class="group flex flex-col h-full border rounded-xl bg-neutral-900 border-neutral-700 hover:border-[#8EF0DD] hover:scale-105 transition-all duration-500">
-                                                    <div
-                                                        class="h-52 flex flex-col justify-center items-center overflow-clip bg-neutral-700 rounded-xl">
-                                                        <img src="<%= dataset.cover_image_url || 'image-assets/dataset-cover/default-cover.jpg' %>"
-                                                            alt="<%= dataset.title %> cover">
-                                                    </div>
-                                                    <div class="p-4 md:p-6">
-                                                        <h3
-                                                            class="text-xl font-semibold text-neutral-300 hover:text-white">
-                                                            <%= dataset.title %>
-                                                        </h3>
-                                                        <p class="mt-3 text-neutral-500">
-                                                            <%= dataset.description %>
-                                                        </p>
-                                                    </div>
-                                                    <div
-                                                        class="mt-auto flex border-t divide-x border-neutral-700 divide-neutral-700">
-                                                        <a class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl shadow-2xs focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none bg-neutral-900 border-neutral-700 text-white hover:bg-neutral-800 focus:bg-neutral-800"
-                                                            href="<%= dataset.file_url %>" target="_blank"
-                                                            rel="noopener noreferrer">
-                                                            Download Dataset
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <!-- End Card -->
-                                                    <% }); %>
-                                                        <% } else { %>
-                                                            <div class="col-span-full text-center text-white/50">
-                                                                <p>No datasets available right now.</p>
-                                                            </div>
-                                                            <% } %>
-                                    </div>
-
-                                    <!-- Pagination -->
-                                    <% if (pagination.pages > 1) { %>
-                                        <div class="flex justify-center gap-2 mb-12">
-                                            <% for (let i = 1; i <= pagination.pages; i++) { %>
-                                                <% if (i === pagination.page) { %>
-                                                    <button
-                                                        class="rounded-lg bg-[#8EF0DD] text-[#154D41] font-semibold px-4 py-2">
-                                                        <%= i %>
-                                                    </button>
-                                                    <% } else { %>
-                                                        <a href="/data?page=<%= i %>"
-                                                            class="rounded-lg bg-white bg-opacity-10 text-white hover:bg-opacity-20 transition-all px-4 py-2">
-                                                            <%= i %>
-                                                        </a>
-                                                        <% } %>
-                                            <% } %>
+                            <!-- Dataset Card Grid -->
+                            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 my-20 mx-10">
+                                <% if (datasets && datasets.length> 0) { %>
+                                    <% datasets.forEach(function(dataset) { %>
+                                        <!-- Card -->
+                                        <div
+                                            class="group flex flex-col h-full border rounded-xl bg-neutral-900 border-neutral-700 hover:border-[#8EF0DD] hover:scale-105 transition-all duration-500">
+                                            <div
+                                                class="h-52 flex flex-col justify-center items-center overflow-clip bg-neutral-700 rounded-xl">
+                                                <img src="<%= dataset.cover_image_url %>"
+                                                    alt="<%= dataset.title %> cover">
+                                            </div>
+                                            <div class="p-4 md:p-6">
+                                                <h3
+                                                    class="text-xl font-semibold text-neutral-300 hover:text-white">
+                                                    <%= dataset.title %>
+                                                </h3>
+                                                <p class="mt-3 text-neutral-500">
+                                                    <%= dataset.description %>
+                                                </p>
+                                            </div>
+                                            <div
+                                                class="mt-auto flex border-t divide-x border-neutral-700 divide-neutral-700">
+                                                <a class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-es-xl shadow-2xs focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none bg-neutral-900 border-neutral-700 text-white hover:bg-neutral-800 focus:bg-neutral-800"
+                                                    href="<%= dataset.file_url %>" target="_blank"
+                                                    rel="noopener noreferrer">
+                                                    Download Dataset
+                                                </a>
+                                            </div>
+                                        </div>
+                                    <% }); %>
+                                    <!-- End Card -->
+                                    <% } else { %>
+                                        <div class="col-span-full text-center text-white/50">
+                                            <p>No datasets available right now.</p>
                                         </div>
                                     <% } %>
-                                </section>
+                            </div>
+
+                            <!-- Pagination -->
+                            <% if (pagination.pages > 1) { %>
+                                <div class="flex justify-center gap-2 mb-12">
+                                    <% for (let i = 1; i <= pagination.pages; i++) { %>
+                                        <% if (i === pagination.page) { %>
+                                            <button
+                                                class="rounded-lg bg-[#8EF0DD] text-[#154D41] font-semibold px-4 py-2">
+                                                <%= i %>
+                                            </button>
+                                            <% } else { %>
+                                                <a href="/data?page=<%= i %>"
+                                                    class="rounded-lg bg-white bg-opacity-10 text-white hover:bg-opacity-20 transition-all px-4 py-2">
+                                                    <%= i %>
+                                                </a>
+                                            <% } %>
+                                    <% } %>
+                                </div>
+                            <% } %>
                 </main>
             </section>
 

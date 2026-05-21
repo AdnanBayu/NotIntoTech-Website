@@ -7,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model articles {
   id                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title                String
@@ -29,7 +28,7 @@ model articles {
 }
 
 model datasets {
-  id              Int       @id @default(autoincrement())
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title           String
   description     String?
   cover_image_url String?
@@ -44,7 +43,6 @@ model datasets {
 ///  embedding Unsupported("vector")?
 ///}
 
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 ///model processed_files {
 ///  id             BigInt    @id @default(autoincrement())
 ///  gdrive_file_id String?   @unique
