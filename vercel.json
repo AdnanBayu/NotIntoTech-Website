@@ -12,6 +12,14 @@
   ],
   "routes": [
     {
+      "src": "/output.css",
+      "dest": "/src/public/output.css"
+    },
+    {
+      "src": "/(.+\\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
+      "dest": "/src/public/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "api/index.js"
     }

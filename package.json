@@ -4,11 +4,11 @@
   "description": "This is repository for Not Into Tech website as digital platform. The website will be utilized for organization branding and releasing products.",
   "main": "server-local.js",
   "scripts": {
-    "build": "npx @tailwindcss/cli -i ./src/public/main.css -o ./src/public/output.css",
     "vercel-build": "prisma generate",
     "dev:css": "npx @tailwindcss/cli -i ./src/public/main.css -o ./src/public/output.css --watch",
     "dev:server": "nodemon server-local.js",
     "dev": "concurrently \"npm run dev:css\" \"npm run dev:server\"",
+    "build": "prisma generate && node server.js",
     "postinstall": "prisma generate"
   },
   "author": "",
@@ -36,12 +36,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AdnanBayu/IdeaBox-Web-Digital-Platform.git"
+    "url": "git+https://github.com/Not-Into-Tech/NotIntoTech-Website.git"
   },
   "bugs": {
-    "url": "https://github.com/AdnanBayu/IdeaBox-Web-Digital-Platform/issues"
+    "url": "https://github.com/Not-Into-Tech/NotIntoTech-Website/issues"
   },
-  "homepage": "https://github.com/AdnanBayu/IdeaBox-Web-Digital-Platform#readme",
+  "homepage": "https://github.com/Not-Into-Tech/NotIntoTech-Website#readme",
   "devDependencies": {
     "concurrently": "^9.2.1",
     "nodemon": "^3.1.11",
