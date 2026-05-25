@@ -14,25 +14,27 @@
 
             <!-- Main Content -->
             <section>
-                <canvas id="neuralCanvas" class="fixed top-0 left-0 w-full h-full z-0 opacity-60"></canvas>
+                <canvas id="noiseCanvas" class="fixed top-0 left-0 w-full h-full z-0 opacity-40"></canvas>
 
                 <main
-                    class="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-12 pointer-events-none">
+                    class="
+                        relative flex flex-col z-10 
+                        items-center justify-center px-6 py-12
+                        min-h-screen
+                        pointer-events-none
+                    ">
                     <!-- Main Text -->
-                    <div class="text-center mb-16 pointer-events-auto relative">
-                        <h1
-                            class="text-[7rem] sm:text-[10rem] md:text-[14rem] font-black leading-none tracking-normal text-emerald-500/40 opacity-30 select-none">
-                            404
-                        </h1>
-                        <div class="-mt-6 sm:-mt-10 md:-mt-14 relative z-20 px-4">
-                            <h2 class="text-2xl sm:text-3xl md:text-5xl font-bold mb-3 text-white drop-shadow-lg">
-                                Page Not <span class="text-emerald-500 italic">Found</span>
-                            </h2>
-                            <p class="max-w-md mx-auto text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed">
-                                This directory is currently unreachable. <br class="hidden sm:block">
-                                Our models suggest returning to a known node below.
-                            </p>
-                        </div>
+                    <div class="
+                        -mt-6 sm:-mt-10 md:-mt-14 px-4 mb-15
+                        relative z-20
+                    ">
+                        <h2 class="text-2xl sm:text-3xl md:text-5xl font-bold mb-3 text-white drop-shadow-lg">
+                            Page Not <span class="text-emerald-500 italic">Found</span>
+                        </h2>
+                        <p class="max-w-md mx-auto text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed">
+                            This directory is currently unreachable. <br class="hidden sm:block">
+                            Our models suggest returning to a known node below.
+                        </p>
                     </div>
 
                     <!-- Suggest Card -->
@@ -67,14 +69,18 @@
                     </div>
 
                     <!-- Back to Home -->
-                    <div class="mt-12 md:mt-16 pointer-events-auto">
+                    <div class="
+                        mt-12 md:mt-16 
+                        pointer-events-auto
+                    ">
                         <a href="/"
-                            class="group flex items-center gap-3 text-emerald-500 font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] hover:text-emerald-300 transition-all duration-300">
-                            <span
-                                class="opacity-30 group-hover:opacity-100 transform group-hover:-translate-x-1 transition-all">&gt;</span>
+                            class="
+                                flex 
+                                items-center gap-3 
+                                text-emerald-500 font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] 
+                                hover:text-emerald-300 transition-all duration-300
+                            ">
                             Back to Home
-                            <span
-                                class="opacity-30 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all">&lt;</span>
                         </a>
                     </div>
                 </main>
@@ -84,108 +90,78 @@
 
         <script src="script.js"></script>
         <script>
-            const canvas = document.getElementById('neuralCanvas');
+            const canvas = document.getElementById('noiseCanvas');
             const ctx = canvas.getContext('2d');
             let particles = [];
-            const mouse = { x: null, y: null };
+            let w, h;
 
             const config = {
-                bgColor: '#010C13',
-                dotColor: 'rgba(21, 77, 65, 0.4)',
-                lineColor: 'rgba(21, 77, 65, 0.15)',
-                particleCount: 80,
-                connectionDist: 180,
-                mouseRadius: 150
+                particleColor: 'rgba(21, 77, 65, 0.4)', // Using brand emerald
+                particleCount: 1500,
+                noiseSpeed: 0.8
             };
 
-            window.addEventListener('mousemove', (e) => {
-                mouse.x = e.x;
-                mouse.y = e.y;
-            });
+            function init() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+                particles = [];
 
-            window.addEventListener('resize', () => {
-                resize();
-            });
+                // Adjust density based on screen size
+                const count = w < 768 ? config.particleCount / 3 : config.particleCount;
 
-            function resize() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                init();
+                for (let i = 0; i < count; i++) {
+                    particles.push({
+                        x: Math.random() * w,
+                        y: Math.random() * h,
+                        size: Math.random() * 1.5,
+                        vx: (Math.random() - 0.5) * config.noiseSpeed,
+                        vy: (Math.random() - 0.5) * config.noiseSpeed,
+                        alpha: Math.random()
+                    });
+                }
             }
 
-            class Particle {
-                constructor() {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.vx = (Math.random() - 0.5) * 0.4;
-                    this.vy = (Math.random() - 0.5) * 0.4;
-                    this.radius = Math.random() * 2 + 1;
-                }
+            function drawNoise() {
+                // Faint tail effect to simulate motion blur
+                ctx.fillStyle = 'rgba(1, 12, 19, 0.2)';
+                ctx.fillRect(0, 0, w, h);
 
-                update() {
-                    this.x += this.vx;
-                    this.y += this.vy;
+                for (let p of particles) {
+                    // Update position with random jitter
+                    p.x += p.vx + (Math.random() - 0.5) * 0.5;
+                    p.y += p.vy + (Math.random() - 0.5) * 0.5;
 
-                    if (this.x < 0) this.x = canvas.width;
-                    if (this.x > canvas.width) this.x = 0;
-                    if (this.y < 0) this.y = canvas.height;
-                    if (this.y > canvas.height) this.y = 0;
+                    // Screen wrapping
+                    if (p.x < 0) p.x = w;
+                    if (p.x > w) p.x = 0;
+                    if (p.y < 0) p.y = h;
+                    if (p.y > h) p.y = 0;
 
-                    if (mouse.x && mouse.y) {
-                        const dx = mouse.x - this.x;
-                        const dy = mouse.y - this.y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-                        if (dist < config.mouseRadius) {
-                            this.x += dx * 0.01;
-                            this.y += dy * 0.01;
-                        }
-                    }
-                }
+                    // Occasional alpha flicker
+                    if (Math.random() > 0.98) p.alpha = Math.random();
 
-                draw() {
                     ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = config.dotColor;
+                    ctx.fillStyle = `rgba(21, 77, 65, ${p.alpha * 0.5})`;
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                     ctx.fill();
                 }
-            }
 
-            function init() {
-                particles = [];
-                const count = window.innerWidth < 768 ? 40 : config.particleCount;
-                for (let i = 0; i < count; i++) {
-                    particles.push(new Particle());
+                // High-frequency Grain Overlay
+                // We draw a few random "pixels" every frame to simulate digital static
+                for (let i = 0; i < 500; i++) {
+                    const gx = Math.random() * w;
+                    const gy = Math.random() * h;
+                    ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.03)' : 'rgba(21,77,65,0.05)';
+                    ctx.fillRect(gx, gy, 1, 1);
                 }
+
+                requestAnimationFrame(drawNoise);
             }
 
-            function animate() {
-                ctx.fillStyle = config.bgColor;
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            window.addEventListener('resize', init);
 
-                for (let i = 0; i < particles.length; i++) {
-                    particles[i].update();
-                    particles[i].draw();
-
-                    for (let j = i + 1; j < particles.length; j++) {
-                        const dx = particles[i].x - particles[j].x;
-                        const dy = particles[i].y - particles[j].y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-
-                        if (dist < config.connectionDist) {
-                            ctx.beginPath();
-                            ctx.strokeStyle = `rgba(21, 77, 65, ${1 - dist / config.connectionDist})`;
-                            ctx.lineWidth = 0.5;
-                            ctx.moveTo(particles[i].x, particles[i].y);
-                            ctx.lineTo(particles[j].x, particles[j].y);
-                            ctx.stroke();
-                        }
-                    }
-                }
-                requestAnimationFrame(animate);
-            }
-
-            resize();
-            animate();
+            init();
+            drawNoise();
         </script>
 
     </body>

@@ -1,61 +1,13 @@
-<div
-    class="
-        flex flex-col 
-        h-[400px] rounded-2xl 
-        bg-white/80 backdrop-blur-xl shadow-2xl 
-        overflow-hidden border border-slate-200
-    ">
+<!-- Full-page chat panel, sits below the site header -->
+<div id="chat-panel" class="
+    fixed 
+    top-[70px] left-0 right-0 bottom-0
+    flex flex-col
+">
 
-    <!-- Top Header -->
-    <div class="
-        bg-deep-dark-blue 
-        p-4 
-        text-white 
-        flex items-center justify-between
-    ">
-        <div class="flex items-center gap-3">
-            <div class="w-3 h-3 bg-dark-teal rounded-full animate-pulse"></div>     <!-- Pulsing Circle -->
-            <span class="font-medium text-[0.8em] tracking-wide">NITE Chatbot</span>    <!-- Text -->
-        </div>
-    </div>
+    <%- include('./chat-window') %>
 
-    <!-- Chat Section -->
-    <div id="chat-window" 
-    class="
-        flex-grow overflow-y-auto space-y-4 
-        text-[0.9em] 
-        bg-white/50 
-        scroll-smooth p-6 
-    ">
-        <div
-            class="
-                bg-dark-teal/5 
-                text-slate-700 
-                rounded-lg rounded-tl-none 
-                border-l-2 border-dark-teal 
-                max-w-[80%] p-4
-            ">
-            Welcome! Let our chatbot help you start your technical transformation today.
-        </div>
-    </div>
-
-    <!-- Input Zone -->
-    <form id="chat-form" class="bg-white border-t border-slate-100 flex gap-2 p-4">
-
-        <input id="chat-input" type="text" placeholder="Ask about tech, competition, business..."
-            class="flex-grow border border-slate-200 focus:outline-none focus:ring-1 focus:ring-dark-teal px-4 py-2"
-            autocomplete="off">
-
-        <button type="submit" class="bg-dark-teal p-3 rounded-xl hover:scale-105 transition-transform active:scale-95">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="w-5 h-5 text-white">
-                <line x1="22" y1="2" x2="11" y2="13" />
-                <polyline points="22 2 15 22 11 13 2 9 22 2" />
-            </svg>
-        </button>
-
-    </form>
+    <%- include('./input-zone') %>
 
 </div>
 
@@ -103,7 +55,40 @@
         const chatInput = document.getElementById('chat-input');
         const chatWindow = document.getElementById('chat-window');
 
+        const welcomePanel = document.getElementById('welcome-panel');
+        const messageContainer = document.getElementById('message-container');
+
         if (!chatForm) return;
+
+        // Dismiss the welcome panel dynamically on first interaction
+        function dismissWelcomePanel() {
+            if (welcomePanel && !welcomePanel.classList.contains('hidden')) {
+                // Fade out & scale out transition
+                welcomePanel.classList.remove('opacity-100', 'scale-100');
+                welcomePanel.classList.add('opacity-0', 'scale-95');
+                
+                setTimeout(() => {
+                    welcomePanel.classList.add('hidden');
+                    // Show the container holding normal stream of messages
+                    messageContainer.classList.remove('hidden');
+                    messageContainer.classList.add('flex');
+                    // Adjust parent alignment if needed
+                    chatWindow.classList.remove('justify-center');
+                }, 400); // matches the duration-500/duration-400 window
+            }
+        }
+
+        // Setup click listeners for Prompt suggestion buttons
+        document.querySelectorAll('.prompt-suggestion').forEach(button => {
+            button.addEventListener('click', () => {
+                const subtext = button.querySelector('span:last-child').textContent;
+                chatInput.value = subtext;
+                chatInput.focus();
+                
+                // Optional: Auto-submit suggestion on click
+                chatForm.dispatchEvent(new Event('submit'));
+            });
+        });
 
         // Handle chatbot response raw format
         function parseMarkdown(text) {
@@ -123,13 +108,16 @@
                 // Line breaks
                 .replace(/\n/g, '<br>');
         }
-        
+
         // Add message user & chatbot to UI
         function addMessage(text, isUser = false) {
+            // Guarantee welcomer is cleared before writing chat streams
+            dismissWelcomePanel();
+            
             const msgDiv = document.createElement('div');
             msgDiv.className = isUser
-                ? "bg-deep-dark-blue/80 p-4 rounded-lg self-end text-white border-r-2 border-dark-teal max-w-[80%]"
-                : "bg-dark-teal/10 p-4 rounded-lg self-start text-black border-l-2 border-dark-teal max-w-[80%]";
+                ? "bg-deep-dark-blue/80 p-4 rounded-lg self-end text-white border-r-4 border-light-blue max-w-[80%]"
+                : "bg-dark-teal/10 p-4 rounded-lg self-start text-black border-l-4 border-dark-teal max-w-[80%]";
             if (isUser) {
                 msgDiv.textContent = text;
             } else {

@@ -1,58 +1,3 @@
-// Chatbot Section
-const PROXY_ENDPOINT = '/api/chat';
-
-document.addEventListener("DOMContentLoaded", () => {
-    // Generate or retrieve a unique session ID for this user's chat session
-    let sessionId = sessionStorage.getItem('chatSessionId');
-    if (!sessionId) {
-        sessionId = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 15);
-        sessionStorage.setItem('chatSessionId', sessionId);
-    }
-
-    const chatForm = document.getElementById('chat-form');
-    const chatInput = document.getElementById('chat-input');
-    const chatWindow = document.getElementById('chat-window');
-
-    if (!chatForm) return;
-
-    function addMessage(text, isUser = false) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = isUser
-            ? "bg-[#010C13]/80 p-4 rounded-lg self-end text-white border-r-2 border-[#154D41] max-w-[80%]"
-            : "bg-[#154D41]/10 p-4 rounded-lg self-start text-black border-l-2 border-[#154D41] max-w-[80%]";
-        msgDiv.textContent = text;
-        chatWindow.appendChild(msgDiv);
-
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
-
-    chatForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const text = chatInput.value.trim();
-        if (!text) return;
-
-        addMessage(text, true);
-        chatInput.value = '';
-
-        try {
-            const response = await fetch(PROXY_ENDPOINT, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: text, sessionId: sessionId })
-            });
-
-            const data = await response.json();
-
-            // Handle n8n output structure
-            const botResponse = data.output || data.response || "Synthesis complete, but no output generated.";
-            addMessage(botResponse);
-
-        } catch (error) {
-            addMessage("The NITE chatbot is temporarily unreachable. Please check server logs.");
-        }
-    });
-});
-
 // Articles Tableau Lazy Loading & Dynamic Embedding
 (function () {
     let tableauScriptLoaded = false;
@@ -154,6 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 })();
 
+// REMINDER: CONSIDER REMOVE THIS
 // Insights Page Client-Side Fetch
 document.addEventListener("DOMContentLoaded", () => {
     const articlesContainer = document.getElementById('articles-container');

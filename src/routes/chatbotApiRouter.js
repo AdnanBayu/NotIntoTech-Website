@@ -68,13 +68,11 @@ router.post('/api/chat', async (req, res) => {
         const rawText = await n8nResponse.text();
         let data;
         try {
-            // Attempt to parse as JSON, fallback to text if not valid JSON or empty
             data = rawText ? JSON.parse(rawText) : { response: "Empty response from chatbot" };
         } catch (e) {
             data = { response: rawText };
         }
 
-        // Send the n8n response back to the browser
         res.json(data);
 
     } catch (error) {

@@ -5,7 +5,6 @@ const express = require('express');
 const path = require('path');
 const connectDB = require('../src/database/mongodbClient');
 const router = require('../src/routes/router');
-const chatbotApiRouter = require('../src/routes/chatbotApiRouter');
 const swaggerSetup = require('../src/swagger');
 
 const app = express();
@@ -22,9 +21,7 @@ app.set('views', path.join(__dirname, '../views'));
 
 swaggerSetup(app);
 
-app.use('/', chatbotApiRouter);
 app.use('/', router);
-
 
 app.use((req, res) => {
     res.status(404).redirect('/error');
