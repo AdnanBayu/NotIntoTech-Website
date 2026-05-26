@@ -33,7 +33,12 @@ const swaggerSpec = swaggerJSDoc(options);
 const swaggerSetup = (app) => {
     app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
         customCss: '.swagger-ui .topbar { display: none }',
-        customSiteTitle: "NotIntoTech API Docs"
+        customSiteTitle: "NotIntoTech API Docs",
+        customCssUrl: "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui.min.css",
+        customJs: [
+            "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui-bundle.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui-standalone-preset.js"
+        ]
     }));
 };
 

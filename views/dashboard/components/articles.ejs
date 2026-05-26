@@ -111,12 +111,7 @@
           </label>
           <select id="art-category"
             class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#8EF0DD] transition-all">
-            <option value="Machine Learning" class="bg-neutral-900">Machine Learning</option>
-            <option value="Data Mining" class="bg-neutral-900">Data Mining</option>
-            <option value="Data Science" class="bg-neutral-900">Data Science</option>
-            <option value="Web Development" class="bg-neutral-900">Web Development</option>
-            <option value="Technology" class="bg-neutral-900">Technology</option>
-            <option value="Other" class="bg-neutral-900" selected>Other</option>
+            <option value="other" class="bg-neutral-900" selected>Loading categories...</option>
           </select>
         </div>
       </div>
@@ -303,6 +298,45 @@
 </div>
 
 <script>
+  // Load categories dynamically
+  function populateCategories(selectedValue = null) {
+    fetch('/api/categories')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data) {
+          const select = document.getElementById('art-category');
+          select.innerHTML = '';
+          let hasOther = false;
+          data.data.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.name;
+            option.className = 'bg-neutral-900';
+            option.textContent = cat.name;
+            select.appendChild(option);
+            if (cat.name === 'Other') hasOther = true;
+          });
+
+          if (!hasOther) {
+            const option = document.createElement('option');
+            option.value = 'Other';
+            option.className = 'bg-neutral-900';
+            option.textContent = 'Other';
+            select.appendChild(option);
+          }
+
+          if (selectedValue) {
+            select.value = selectedValue;
+          }
+        }
+      })
+      .catch(err => console.error('Error loading categories:', err));
+  }
+
+  // Fetch categories on load
+  document.addEventListener('DOMContentLoaded', () => {
+    populateCategories();
+  });
+
   // ARTICLES LOGIC (CRUD)
 
   // Get articles on db
@@ -442,7 +476,9 @@
         document.getElementById('article-modal-title').innerText = 'Edit Article';
         document.getElementById('article-id').value = art.id;
         document.getElementById('art-title').value = art.title;
-        document.getElementById('art-category').value = art.category || 'Other';
+        document.getElementById('art-category').value = art.category || 'other';
+        // Re-populate categories and set the correct value in case it hasn't loaded yet
+        populateCategories(art.category || 'other');
         document.getElementById('art-content').value = art.content;
         document.getElementById('art-author').value = art.author || 'NITE Team';
         document.getElementById('art-tags').value = (art.tags || []).join(', ');

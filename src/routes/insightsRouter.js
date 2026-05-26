@@ -12,6 +12,7 @@ router.get('/insights', async (req, res) => {
     const [articles, count] = await Promise.all([
       prisma.articles.findMany({
         where: { status: 'published' },
+        include: { category_rel: true },
         orderBy: [{ published_at: 'desc' }, { created_at: 'desc' }],
         skip,
         take: limit,
@@ -19,8 +20,13 @@ router.get('/insights', async (req, res) => {
       prisma.articles.count({ where: { status: 'published' } }),
     ]);
 
+    const formattedArticles = (articles || []).map(article => ({
+      ...article,
+      category: article.category_rel ? article.category_rel.name : 'Other'
+    }));
+
     res.render('insights/page-insights', {
-      articles: articles || [],
+      articles: formattedArticles,
       pagination: {
         page,
         pages: Math.ceil((count || 0) / limit),
@@ -41,6 +47,7 @@ router.get('/insights/:slug', async (req, res) => {
   try {
     const article = await prisma.articles.findFirst({
       where: { slug: req.params.slug, status: 'published' },
+      include: { category_rel: true },
     });
 
     if (!article) {
@@ -58,6 +65,7 @@ router.get('/insights/:slug', async (req, res) => {
     });
 
     article.views = newViews;
+    article.category = article.category_rel ? article.category_rel.name : 'Other';
 
     res.render('insights/insights-detail', { article });
   } catch (error) {

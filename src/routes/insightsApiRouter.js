@@ -61,6 +61,7 @@ router.get('/api/insights', async (req, res) => {
     const [articles, count] = await Promise.all([
       prisma.articles.findMany({
         where: { status: 'published' },
+        include: { category_rel: true },
         orderBy: { published_at: 'desc' },
         skip,
         take: limit,
@@ -68,9 +69,15 @@ router.get('/api/insights', async (req, res) => {
       prisma.articles.count({ where: { status: 'published' } }),
     ]);
 
+    // Flatten category for frontend compatibility if needed
+    const formattedArticles = articles.map(article => ({
+      ...article,
+      category: article.category_rel ? article.category_rel.name : 'Other'
+    }));
+
     res.json({
       success: true,
-      data: articles,
+      data: formattedArticles,
       pagination: {
         page,
         limit,
@@ -119,6 +126,7 @@ router.get('/api/insights/:slug', async (req, res) => {
   try {
     const article = await prisma.articles.findFirst({
       where: { slug: req.params.slug, status: 'published' },
+      include: { category_rel: true },
     });
 
     if (!article) {
@@ -133,7 +141,13 @@ router.get('/api/insights/:slug', async (req, res) => {
     });
     article.views = newViews;
 
-    res.json({ success: true, data: article });
+    // Flatten category
+    const data = {
+      ...article,
+      category: article.category_rel ? article.category_rel.name : 'Other'
+    };
+
+    res.json({ success: true, data });
   } catch (error) {
     console.error('Error fetching article:', error);
     res.status(500).json({ success: false, error: 'Failed to fetch article' });
@@ -174,14 +188,50 @@ router.get('/api/insights/:slug', async (req, res) => {
 router.get('/api/insights/category/:category', async (req, res) => {
   try {
     const articles = await prisma.articles.findMany({
-      where: { category: req.params.category, status: 'published' },
+      where: {
+        category_rel: {
+          name: req.params.category
+        },
+        status: 'published'
+      },
+      include: { category_rel: true },
       orderBy: { published_at: 'desc' },
     });
 
-    res.json({ success: true, data: articles });
+    const formattedArticles = articles.map(article => ({
+      ...article,
+      category: article.category_rel ? article.category_rel.name : 'Other'
+    }));
+
+    res.json({ success: true, data: formattedArticles });
   } catch (error) {
     console.error('Error fetching articles by category:', error);
     res.status(500).json({ success: false, error: 'Failed to fetch articles' });
+  }
+});
+
+/**
+ * @swagger
+ * /api/categories:
+ *   get:
+ *     summary: Retrieve all article categories
+ *     tags: [Insights]
+ *     responses:
+ *       200:
+ *         description: A list of categories
+ *       500:
+ *         description: Internal server error
+ */
+// GET /api/categories
+router.get('/api/categories', async (req, res) => {
+  try {
+    const categories = await prisma.article_categories.findMany({
+      orderBy: { name: 'asc' }
+    });
+    res.json({ success: true, data: categories });
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch categories' });
   }
 });
 
@@ -270,13 +320,24 @@ router.post(
         });
       }
 
+      // Find or create category if name is provided
+      let categoryId = null;
+      if (category) {
+        const cat = await prisma.article_categories.upsert({
+          where: { name: category },
+          update: {},
+          create: { name: category }
+        });
+        categoryId = cat.id;
+      }
+
       const article = await prisma.articles.create({
         data: {
           title,
           slug,
           content,
           excerpt: excerpt || content.substring(0, 150),
-          category: category || 'Other',
+          category_id: categoryId,
           tags: tags || [],
           author: author || 'NITE Team',
           tableau_url: tableauUrl || null,
@@ -285,12 +346,19 @@ router.post(
           featured_image: featuredImage || null,
           status: 'draft',
         },
+        include: { category_rel: true }
       });
+
+      // Flatten category for response
+      const responseData = {
+        ...article,
+        category: article.category_rel ? article.category_rel.name : 'Other'
+      };
 
       res.status(201).json({
         success: true,
         message: 'Article created successfully',
-        data: article
+        data: responseData
       });
     } catch (error) {
       console.error('Error creating article:', error);
@@ -347,6 +415,7 @@ router.get('/api/insights-admin/all', isAdmin, async (req, res) => {
     const [articles, count] = await Promise.all([
       prisma.articles.findMany({
         where,
+        include: { category_rel: true },
         orderBy: { created_at: 'desc' },
         skip,
         take: limit,
@@ -354,9 +423,14 @@ router.get('/api/insights-admin/all', isAdmin, async (req, res) => {
       prisma.articles.count({ where }),
     ]);
 
+    const formattedArticles = articles.map(article => ({
+      ...article,
+      category: article.category_rel ? article.category_rel.name : 'Other'
+    }));
+
     res.json({
       success: true,
-      data: articles,
+      data: formattedArticles,
       pagination: { page, limit, total: count, pages: Math.ceil(count / limit) },
     });
   } catch (error) {
@@ -435,11 +509,10 @@ router.put(
       const updates = { ...req.body };
       delete updates.status; // Prevent status change via PUT
 
-      // Map camelCase to snake_case
+      // Map camelCase to snake_case and handle category
       const updatePayload = {};
       if (updates.title !== undefined) updatePayload.title = updates.title;
       if (updates.content !== undefined) updatePayload.content = updates.content;
-      if (updates.category !== undefined) updatePayload.category = updates.category;
       if (updates.excerpt !== undefined) updatePayload.excerpt = updates.excerpt;
       if (updates.tags !== undefined) updatePayload.tags = updates.tags;
       if (updates.author !== undefined) updatePayload.author = updates.author;
@@ -448,21 +521,36 @@ router.put(
       if (updates.seoKeywords !== undefined) updatePayload.seo_keywords = updates.seoKeywords;
       if (updates.featuredImage !== undefined) updatePayload.featured_image = updates.featuredImage;
 
+      if (updates.category !== undefined) {
+        const cat = await prisma.article_categories.upsert({
+          where: { name: updates.category },
+          update: {},
+          create: { name: updates.category }
+        });
+        updatePayload.category_id = cat.id;
+      }
+
       updatePayload.updated_at = new Date();
 
       const article = await prisma.articles.update({
         where: { id: req.params.id },
         data: updatePayload,
+        include: { category_rel: true }
       });
 
       if (!article) {
         return res.status(404).json({ success: false, error: 'Article not found' });
       }
 
+      const responseData = {
+        ...article,
+        category: article.category_rel ? article.category_rel.name : 'Other'
+      };
+
       res.json({
         success: true,
         message: 'Article updated successfully',
-        data: article
+        data: responseData
       });
     } catch (error) {
       console.error('Error updating article:', error);

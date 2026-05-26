@@ -9,23 +9,31 @@ datasource db {
 }
 
 model articles {
-  id                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id                   String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   title                String
-  slug                 String    @unique
+  slug                 String              @unique
   content              String
   excerpt              String?
-  category             String?   @default("Other")
+  category_id          String?             @db.Uuid
+  category_rel         article_categories? @relation(fields: [category_id], references: [id])
   tags                 String[]
-  author               String?   @default("NITE Team")
+  author               String?             @default("NITE Team")
   featured_image       String?
   seo_meta_description String?
   seo_keywords         String[]
-  status               String?   @default("draft")
+  status               String?             @default("draft")
   tableau_url          String?
-  views                Int?      @default(0)
-  published_at         DateTime? @db.Timestamptz(6)
-  created_at           DateTime? @default(now()) @db.Timestamptz(6)
-  updated_at           DateTime? @default(now()) @db.Timestamptz(6)
+  views                Int?                @default(0)
+  published_at         DateTime?           @db.Timestamptz(6)
+  created_at           DateTime?           @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?           @default(now()) @db.Timestamptz(6)
+}
+
+model article_categories {
+  id         String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name       String     @unique
+  created_at DateTime?  @default(now()) @db.Timestamptz(6)
+  articles   articles[]
 }
 
 model datasets {
