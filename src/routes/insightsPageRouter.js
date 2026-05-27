@@ -67,6 +67,12 @@ router.get('/insights/:slug', async (req, res) => {
     article.views = newViews;
     article.category = article.category_rel ? article.category_rel.name : 'Other';
     article.tableauUrl = article.tableau ? article.tableau.tableau_url : null;
+    article.updated_at = (article.updated_at instanceof Date) ? article.updated_at.toISOString().split('T')[0] : 'Unknown';
+
+    // To handle Date and String data type
+    // article.updated_at = (article.updated_at instanceof Date)
+    //   ? article.updated_at.toISOString().split('T')[0]
+    //   : (typeof article.updated_at === 'string' ? article.updated_at.split('T')[0] : 'Unknown');
 
     res.render('insights/insights-detail', { article });
   } catch (error) {

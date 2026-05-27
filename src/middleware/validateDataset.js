@@ -75,7 +75,7 @@ const handleValidationErrors = (req, res, next) => {
       success: false,
       error: 'Validation failed',
       details: errors.array().map(err => ({
-        field: err.path, // note: in newer express-validator versions it's 'path', in older it was 'param'. Let's support both.
+        field: err.path,
         message: err.msg
       }))
     });

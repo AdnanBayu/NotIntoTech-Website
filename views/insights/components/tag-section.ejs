@@ -1,0 +1,13 @@
+<% if (article.tags && article.tags.length> 0) { %>
+    <section class="border-t border-white border-opacity-10 pt-8">
+        <h4 class="text-white font-semibold mb-4">Tags</h4>
+        <div class="flex flex-wrap gap-2">
+            <% article.tags.forEach(tag=> { %>
+                <a href="/insights?tag=<%= tag %>"
+                    class="inline-block bg-[#010C13] bg-opacity-10 hover:bg-opacity-20 text-white px-4 py-2 rounded-full text-sm transition-all">
+                    #<%= tag %>
+                </a>
+                <% }); %>
+        </div>
+    </section>
+    <% } %>
