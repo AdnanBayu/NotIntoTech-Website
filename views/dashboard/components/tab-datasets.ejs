@@ -1,0 +1,225 @@
+<!-- Tab: Datasets Management -->
+
+<div id="tab-datasets" class="space-y-6">
+
+  <!-- Sub-header -->
+  <div class="flex justify-between items-center">
+
+    <!-- Header title -->
+    <h2 class="text-xl font-bold tracking-tight">Dataset Files</h2>
+
+    <!-- Button add dataset -->
+    <button onclick="openDatasetModal()" class="
+      flex items-center gap-2 px-5 py-2.5
+      bg-[#8EF0DD] shadow-sm
+      transition transform active:scale-95 hover:bg-[#8EF0DD]/90 
+      text-[#154D41] font-bold text-sm 
+      rounded-xl
+      ">
+      <i data-lucide="plus"></i>
+      Add Dataset
+    </button>
+  </div>
+
+  <!-- Table datasets -->
+  <%- include('table-datasets') %>
+</div>
+
+<!-- Dataset Add/Edit Section -->
+<%- include('edit-dataset') %>
+
+  <script>
+    // DATASETS LOGIC (CRUD)
+
+    // Get datasets on db
+    function fetchDatasets() {
+      const tbody = document.getElementById('datasets-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-white/40">Loading datasets...</td></tr>';
+
+      fetch('/api/datasets?limit=100', {
+        method: 'GET'
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (!data.success) throw new Error(data.error || 'Failed to fetch datasets');
+
+          const datasets = data.data || [];
+          if (datasets.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-white/40">No datasets found. Click "Add Dataset" to upload one.</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = datasets.map(ds => {
+            const cover = ds.cover_image_url;
+            const desc = ds.description ? (ds.description.substring(0, 80) + (ds.description.length > 80 ? '...' : '')) : '-';
+
+            return `
+            <tr class="hover:bg-white/5 transition-colors">
+              <td class="p-4">
+                <img src="${cover}" class="w-12 h-12 object-cover rounded-lg border border-white/10" alt="Cover">
+              </td>
+              <td class="p-4 font-bold text-white/90">${escapeHtml(ds.title)}</td>
+              <td class="p-4 text-white/60 max-w-xs truncate">${escapeHtml(desc)}</td>
+              <td class="p-4">
+                <a href="${ds.file_url}" target="_blank" class="inline-flex items-center gap-1.5 text-[#8EF0DD] hover:underline font-medium">
+                  Download File
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                </a>
+              </td>
+              <td class="p-4 text-right">
+                <div class="flex justify-end gap-2">
+                  <button onclick="editDataset(${ds.id}, '${escapeQuote(ds.title)}', '${escapeQuote(ds.description || '')}', '${escapeQuote(ds.cover_image_url || '')}', '${escapeQuote(ds.file_url)}')" class="p-2 border border-white/10 hover:border-[#8EF0DD]/50 hover:bg-[#8EF0DD]/10 text-white/70 hover:text-white rounded-lg transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                  </button>
+                  <button onclick="deleteDataset(${ds.id}, '${escapeQuote(ds.title)}')" class="p-2 border border-white/10 hover:border-red-500/50 hover:bg-red-500/10 text-white/70 hover:text-white rounded-lg transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+          }).join('');
+        })
+        .catch(err => {
+          console.error(err);
+          tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-red-400 font-medium">${err.message}</td></tr>`;
+        });
+    }
+
+    // Open edit section 
+    function openDatasetModal() {
+      const form = document.getElementById('dataset-form');
+      if (form) form.reset();
+      document.getElementById('dataset-id').value = '';
+      document.getElementById('dataset-modal-title').innerText = 'Add Dataset';
+
+      // Clear upload status texts
+      const dsCoverStatus = document.getElementById('ds-cover-status');
+      if (dsCoverStatus) {
+        dsCoverStatus.innerText = 'Drag file here or click to browse';
+        dsCoverStatus.className = 'text-xs text-white/40';
+      }
+      const dsFileStatus = document.getElementById('ds-file-status');
+      if (dsFileStatus) {
+        dsFileStatus.innerText = 'Drag file here or click to browse';
+        dsFileStatus.className = 'text-xs text-white/40';
+      }
+
+      const modal = document.getElementById('dataset-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+          modal.firstElementChild.classList.remove('scale-95', 'opacity-0');
+          modal.firstElementChild.classList.add('scale-100', 'opacity-100');
+        }, 50);
+      }
+    }
+
+    // Close edit section 
+    function closeDatasetModal() {
+      const modal = document.getElementById('dataset-modal');
+      if (!modal) return;
+
+      modal.firstElementChild.classList.remove('scale-100', 'opacity-100');
+      modal.firstElementChild.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    // Helper edit dataset store value
+    function editDataset(id, title, description, coverImageUrl, fileUrl) {
+      openDatasetModal();
+      document.getElementById('dataset-modal-title').innerText = 'Edit Dataset';
+      document.getElementById('dataset-id').value = id;
+      document.getElementById('ds-title').value = title;
+      document.getElementById('ds-desc').value = description;
+      document.getElementById('ds-cover-url').value = coverImageUrl;
+      document.getElementById('ds-file-url').value = fileUrl;
+    }
+
+    // Submit dataset form
+    function submitDatasetForm(event) {
+      event.preventDefault();
+
+      const id = document.getElementById('dataset-id').value;
+      const title = document.getElementById('ds-title').value.trim();
+      const description = document.getElementById('ds-desc').value.trim();
+      const coverImageUrl = document.getElementById('ds-cover-url').value.trim();
+      const fileUrl = document.getElementById('ds-file-url').value.trim();
+
+      const payload = { title, description, coverImageUrl, fileUrl };
+
+      // Check if status is editing dataset or add new
+      const isEdit = !!id;
+      const url = isEdit ? `/api/datasets/${id}` : '/api/datasets';
+      const method = isEdit ? 'PUT' : 'POST';
+
+      // Fetch post or put dataset api
+      fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminToken}`
+        },
+        body: JSON.stringify(payload)
+      })
+        .then(res => {
+          if (!res.ok) {
+            if (res.status === 403 || res.status === 401) {
+              logout();
+              throw new Error('Access token expired. Re-authenticate.');
+            }
+            return res.json().then(data => { throw new Error(data.error || 'Failed to save dataset') });
+          }
+          return res.json();
+        })
+        .then(data => {
+          if (typeof showToast === 'function') {
+            showToast(isEdit ? 'Dataset updated successfully!' : 'Dataset added successfully!', 'success');
+          }
+          closeDatasetModal();
+          fetchDatasets();
+        })
+        .catch(err => {
+          console.error(err);
+          if (typeof showToast === 'function') {
+            showToast(err.message, 'error');
+          }
+        });
+    }
+
+    // Delete dataset
+    function deleteDataset(id, title) {
+      if (!confirm(`Are you absolutely sure you want to delete dataset: "${title}"?`)) return;
+
+      // Fetch delete dataset api
+      fetch(`/api/datasets/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${adminToken}`
+        }
+      })
+        .then(res => {
+          if (!res.ok) {
+            if (res.status === 403 || res.status === 401) {
+              logout();
+              throw new Error('Access token expired. Re-authenticate.');
+            }
+            return res.json().then(data => { throw new Error(data.error || 'Failed to delete dataset') });
+          }
+          return res.json();
+        })
+        .then(data => {
+          if (typeof showToast === 'function') {
+            showToast('Dataset deleted successfully.', 'success');
+          }
+          fetchDatasets();
+        })
+        .catch(err => {
+          console.error(err);
+          if (typeof showToast === 'function') {
+            showToast(err.message, 'error');
+          }
+        });
+    }
+  </script>

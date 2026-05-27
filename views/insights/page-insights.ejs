@@ -40,17 +40,17 @@
                     </header>
 
                     <!-- Main Content -->
-                    
+
                     <!-- Featured Article -->
-                    <% if (articles && articles.length > 0) { %>
+                    <% if (articles && articles.length> 0) { %>
                         <%- include('components/featured-article', { articles: articles }) %>
-                    <% } %>
+                            <% } %>
 
-                    <!--  Articles Card Grid --> 
-                    <%- include('components/articles-grid', { articles: articles }) %>
+                                <!--  Articles Card Grid -->
+                                <%- include('components/articles-grid', { articles: articles }) %>
 
-                    <!-- Pagination -->
-                    <%- include('components/pagination', { pagination: pagination }) %>
+                                    <!-- Pagination -->
+                                    <%- include('components/pagination', { pagination: pagination }) %>
                 </main>
             </section>
 
@@ -62,6 +62,12 @@
         </div>
 
         <script src="script.js"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                lucide.createIcons();
+            });
+        </script>
 
     </body>
 

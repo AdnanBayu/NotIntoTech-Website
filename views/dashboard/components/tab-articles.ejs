@@ -1,0 +1,358 @@
+<!-- Tab: Articles Management -->
+
+<div id="tab-articles" class="hidden space-y-6">
+
+  <!-- Subheader -->
+  <div class="flex justify-between items-center">
+
+    <!-- Header title -->
+    <h2 class="text-xl font-bold tracking-tight">Insights Articles</h2>
+
+    <!-- Button create article -->
+    <button onclick="openArticleModal()" class="
+      flex items-center gap-2 px-5 py-2.5
+      bg-[#8EF0DD] shadow-sm
+      hover:bg-[#8EF0DD]/90 transition transform active:scale-95 
+      text-[#154D41] font-bold text-sm
+      rounded-xl
+      ">
+      <i data-lucide="plus"></i>
+      Create Article
+    </button>
+  </div>
+
+  <!-- Table articles -->
+  <%- include('table-articles') %>
+</div>
+
+<!-- Article Add/Edit Section -->
+<%- include('edit-article') %>
+
+  <script>
+    // Load categories dynamically
+    function populateCategories(selectedValue = null) {
+      fetch('/api/categories')
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.data) {
+            const select = document.getElementById('art-category');
+            select.innerHTML = '';
+            let hasOther = false;
+            data.data.forEach(cat => {
+              const option = document.createElement('option');
+              option.value = cat.name;
+              option.className = 'bg-neutral-900';
+              option.textContent = cat.name;
+              select.appendChild(option);
+              if (cat.name === 'Other') hasOther = true;
+            });
+
+            if (!hasOther) {
+              const option = document.createElement('option');
+              option.value = 'Other';
+              option.className = 'bg-neutral-900';
+              option.textContent = 'Other';
+              select.appendChild(option);
+            }
+
+            if (selectedValue) {
+              select.value = selectedValue;
+            }
+          }
+        })
+        .catch(err => console.error('Error loading categories:', err));
+    }
+
+    // Fetch categories on load
+    document.addEventListener('DOMContentLoaded', () => {
+      populateCategories();
+    });
+
+    // ARTICLES LOGIC (CRUD)
+
+    // Get articles on db
+    function fetchArticles() {
+      const tbody = document.getElementById('articles-table-body');
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-white/40">Loading articles...</td></tr>';
+
+      // Call the ADMIN endpoint to get both drafts and published articles
+      fetch('/api/insights-admin/all?limit=100', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${adminToken}`
+        }
+      })
+        .then(res => {
+          if (!res.ok) {
+            if (res.status === 403 || res.status === 401) {
+              logout();
+              throw new Error('Access token invalid or expired.');
+            }
+            return res.json().then(data => { throw new Error(data.error || 'Failed to load articles') });
+          }
+          return res.json();
+        })
+        .then(data => {
+          if (!data.success) throw new Error(data.error || 'Failed to fetch articles');
+
+          const articles = data.data || [];
+          if (articles.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-white/40">No articles found. Click "Create Article" to write one.</td></tr>';
+            return;
+          }
+
+          tbody.innerHTML = articles.map(art => {
+            const cover = art.featured_image || '/image-assets/dataset-cover/default-cover.jpg';
+            const isPublished = art.status === 'published';
+
+            const badgeClass = isPublished
+              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+              : 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+            const badgeText = isPublished ? 'Published' : 'Draft';
+
+            const publishActionBtn = isPublished
+              ? `<button onclick="togglePublish('${art.id}', false)" title="Unpublish (make Draft)" class="p-2 border border-white/10 hover:border-amber-500/50 hover:bg-amber-500/10 text-white/70 hover:text-white rounded-lg transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+            </button>`
+              : `<button onclick="togglePublish('${art.id}', true)" title="Publish" class="p-2 border border-white/10 hover:border-emerald-500/50 hover:bg-emerald-500/10 text-white/70 hover:text-white rounded-lg transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </button>`;
+
+            return `
+        <tr class="hover:bg-white/5 transition-colors">
+          <td class="p-4">
+            <img src="${cover}" class="w-12 h-12 object-cover rounded-lg border border-white/10" alt="Cover">
+          </td>
+          <td class="p-4 font-bold text-white/90">${escapeHtml(art.title)}</td>
+          <td class="p-4 text-white/60">${escapeHtml(art.category || 'Other')}</td>
+          <td class="p-4">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${badgeClass}">
+              ${badgeText}
+            </span>
+          </td>
+          <td class="p-4 text-white/60 font-mono">${art.views || 0}</td>
+          <td class="p-4 text-right">
+            <div class="flex justify-end gap-2">
+              ${publishActionBtn}
+              <button onclick="editArticle('${art.id}')" class="p-2 border border-white/10 hover:border-[#8EF0DD]/50 hover:bg-[#8EF0DD]/10 text-white/70 hover:text-white rounded-lg transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+              </button>
+              <button onclick="deleteArticle('${art.id}', '${escapeQuote(art.title)}')" class="p-2 border border-white/10 hover:border-red-500/50 hover:bg-red-500/10 text-white/70 hover:text-white rounded-lg transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+          }).join('');
+        })
+        .catch(err => {
+          console.error(err);
+          tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-red-400 font-medium">${err.message}</td></tr>`;
+        });
+    }
+
+    // Open edit section 
+    function openArticleModal() {
+      const form = document.getElementById('article-form');
+      if (form) form.reset();
+      document.getElementById('article-id').value = '';
+      document.getElementById('article-modal-title').innerText = 'Write New Article';
+
+      // Clear file status
+      const artImageStatus = document.getElementById('art-image-status');
+      if (artImageStatus) {
+        artImageStatus.innerText = 'Drag file here or click to browse';
+        artImageStatus.className = 'text-xs text-white/40';
+      }
+
+      const modal = document.getElementById('article-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+          modal.firstElementChild.classList.remove('scale-95', 'opacity-0');
+          modal.firstElementChild.classList.add('scale-100', 'opacity-100');
+        }, 50);
+      }
+    }
+
+    // Close edit section 
+    function closeArticleModal() {
+      const modal = document.getElementById('article-modal');
+      if (!modal) return;
+
+      modal.firstElementChild.classList.remove('scale-100', 'opacity-100');
+      modal.firstElementChild.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    // Helper edit article store value
+    function editArticle(id) {
+      fetch('/api/insights-admin/all?limit=100', {
+        headers: { 'Authorization': `Bearer ${adminToken}` }
+      })
+        .then(res => res.json())
+        .then(data => {
+          const articles = data.data || [];
+          const art = articles.find(a => a.id === id);
+          if (!art) {
+            if (typeof showToast === 'function') {
+              showToast('Article not found.', 'error');
+            }
+            return;
+          }
+
+          openArticleModal();
+          document.getElementById('article-modal-title').innerText = 'Edit Article';
+          document.getElementById('article-id').value = art.id;
+          document.getElementById('art-title').value = art.title;
+          document.getElementById('art-category').value = art.category || 'other';
+          // Re-populate categories and set the correct value in case it hasn't loaded yet
+          populateCategories(art.category || 'other');
+          document.getElementById('art-content').value = art.content;
+          document.getElementById('art-author').value = art.author || 'NITE Team';
+          document.getElementById('art-tags').value = (art.tags || []).join(', ');
+          document.getElementById('art-image-url').value = art.featured_image || '';
+          document.getElementById('art-excerpt').value = art.excerpt || '';
+          document.getElementById('art-seo-desc').value = art.seo_meta_description || '';
+          document.getElementById('art-seo-keywords').value = (art.seo_keywords || []).join(', ');
+          document.getElementById('art-tableau-url').value = art.tableau_url || '';
+        });
+    }
+
+    // Submit article form
+    function submitArticleForm(event) {
+      event.preventDefault();
+
+      const id = document.getElementById('article-id').value;
+      const title = document.getElementById('art-title').value.trim();
+      const category = document.getElementById('art-category').value;
+      const content = document.getElementById('art-content').value.trim();
+      const author = document.getElementById('art-author').value.trim();
+      const tags = document.getElementById('art-tags').value.split(',').map(t => t.trim()).filter(Boolean);
+      const featuredImage = document.getElementById('art-image-url').value.trim();
+      const excerpt = document.getElementById('art-excerpt').value.trim();
+      const seoMetaDescription = document.getElementById('art-seo-desc').value.trim();
+      const seoKeywords = document.getElementById('art-seo-keywords').value.split(',').map(t => t.trim()).filter(Boolean);
+      const tableauUrl = document.getElementById('art-tableau-url').value.trim();
+
+      const payload = {
+        title,
+        category,
+        content,
+        author,
+        tags,
+        featuredImage,
+        excerpt,
+        seoMetaDescription,
+        seoKeywords,
+        tableauUrl
+      };
+      // Check if status is editing article or add new
+      const isEdit = !!id;
+      const url = isEdit ? `/api/insights/${id}` : '/api/insights';
+      const method = isEdit ? 'PUT' : 'POST';
+
+      // Fetch post or put article api
+      fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminToken}`
+        },
+        body: JSON.stringify(payload)
+      })
+        .then(res => {
+          if (!res.ok) {
+            if (res.status === 403 || res.status === 401) {
+              logout();
+              throw new Error('Access token expired. Re-authenticate.');
+            }
+            return res.json().then(data => { throw new Error(data.error || 'Failed to save article') });
+          }
+          return res.json();
+        })
+        .then(data => {
+          if (typeof showToast === 'function') {
+            showToast(isEdit ? 'Article updated successfully!' : 'Article drafted successfully!', 'success');
+          }
+          closeArticleModal();
+          fetchArticles();
+        })
+        .catch(err => {
+          console.error(err);
+          if (typeof showToast === 'function') {
+            showToast(err.message, 'error');
+          }
+        });
+    }
+
+    // Toggle publish or unpublish article
+    function togglePublish(id, shouldPublish) {
+      const endpoint = shouldPublish ? 'publish' : 'unpublish';
+
+      fetch(`/api/insights/${id}/${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${adminToken}`
+        }
+      })
+        .then(res => {
+          if (!res.ok) {
+            if (res.status === 403 || res.status === 401) {
+              logout();
+              throw new Error('Access token expired. Re-authenticate.');
+            }
+            return res.json().then(data => { throw new Error(data.error || 'Failed to change publish state') });
+          }
+          return res.json();
+        })
+        .then(data => {
+          if (typeof showToast === 'function') {
+            showToast(shouldPublish ? 'Article published and live!' : 'Article returned to drafts.', 'success');
+          }
+          fetchArticles();
+        })
+        .catch(err => {
+          console.error(err);
+          if (typeof showToast === 'function') {
+            showToast(err.message, 'error');
+          }
+        });
+    }
+
+    // Delete article
+    function deleteArticle(id, title) {
+      if (!confirm(`Are you absolutely sure you want to delete article: "${title}"?`)) return;
+
+      fetch(`/api/insights/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${adminToken}`
+        }
+      })
+        .then(res => {
+          if (!res.ok) {
+            if (res.status === 403 || res.status === 401) {
+              logout();
+              throw new Error('Access token expired. Re-authenticate.');
+            }
+            return res.json().then(data => { throw new Error(data.error || 'Failed to delete article') });
+          }
+          return res.json();
+        })
+        .then(data => {
+          if (typeof showToast === 'function') {
+            showToast('Article deleted successfully.', 'success');
+          }
+          fetchArticles();
+        })
+        .catch(err => {
+          console.error(err);
+          if (typeof showToast === 'function') {
+            showToast(err.message, 'error');
+          }
+        });
+    }
+  </script>

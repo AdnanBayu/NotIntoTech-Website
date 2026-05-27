@@ -45,15 +45,7 @@
                                 <!-- floating icon -->
                                 <div class="absolute -top-8 -right-30 p-3 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 rotate-[-12deg] animate-pulse hidden md:block"
                                     style="animation-duration: 5s;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="text-white w-6 h-6">
-                                        <path d="M17 8h1a4 4 0 1 1 0 8h-1" />
-                                        <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z" />
-                                        <line x1="6" y1="2" x2="6" y2="4" />
-                                        <line x1="10" y1="2" x2="10" y2="4" />
-                                        <line x1="14" y1="2" x2="14" y2="4" />
-                                    </svg>
+                                    <i data-lucide="coffee" class="text-white/40"></i>
                                 </div>
                             </div>
 
@@ -72,11 +64,7 @@
 
                             <!-- Scroll Down Indicator -->
                             <div class="mt-20 opacity-50 animate-bounce flex justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none" stroke="white" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="w-6 h-6">
-                                    <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
-                                </svg>
+                                <i data-lucide="chevrons-down" class="text-white/40"></i>
                             </div>
 
                         </div>
@@ -86,16 +74,16 @@
                     <!-- NOT YET APPLICABLE -->
 
                     <!-- chatbot section -->
-                    <%- include('index-components/chatbot') %>
+                    <%- include('index-sections/chatbot') %>
 
-                    <!-- product section -->
-                    <%- include('index-components/product') %>
+                        <!-- product section -->
+                        <%- include('index-sections/product') %>
 
-                    <!-- partnership section -->
-                    <%- include('index-components/partnership') %>
+                            <!-- partnership section -->
+                            <%- include('index-sections/partnership') %>
 
-                    <!-- Contact & Feedback Form -->
-                    <%- include('index-components/contact-feedback') %>
+                                <!-- Contact & Feedback Form -->
+                                <%- include('index-sections/contact-feedback') %>
                 </main>
             </section>
 
@@ -107,6 +95,12 @@
         </div>
 
         <script src="script.js"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                lucide.createIcons();
+            });
+        </script>
 
     </body>
 

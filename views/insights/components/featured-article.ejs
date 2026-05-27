@@ -1,8 +1,7 @@
 <!-- Featured Spotlight -->
-<% const latestArticle = articles[0]; %>
-<a href="/insights/<%= latestArticle.slug %>" class="px-10 mb-12 block group">
-    <div
-        class="
+<% const latestArticle=articles[0]; %>
+    <a href="/insights/<%= latestArticle.slug %>" class="px-10 mb-12 block group">
+        <div class="
             max-w-6xl mx-auto 
             h-[400px] md:h-[500px] rounded-3xl 
             relative overflow-hidden 
@@ -11,35 +10,32 @@
             transition-all duration-500 group-hover:border-white/20
         ">
 
-        <!-- Visual Placeholder Background with scaling -->
-        <div class="
+            <!-- Visual Placeholder Background with scaling -->
+            <div class="
             absolute inset-0 
             bg-slate-900 bg-cover bg-center 
             group-hover:scale-110 transition-transform duration-1000 ease-out 
             z-0
-        "
-            style="background-image: url('<%= latestArticle.featured_image %>');">
-        </div>
+        " style="background-image: url('<%= latestArticle.featured_image %>');">
+            </div>
 
-        <!-- Gradient Overlay -->
-        <div
-            class="
+            <!-- Gradient Overlay -->
+            <div class="
                 absolute inset-0 
                 bg-gradient-to-t from-[#010C13] via-[#010C13]/80 to-transparent 
                 z-10
             ">
-        </div>
+            </div>
 
-        <!-- Content Overlay -->
-        <div class="
+            <!-- Content Overlay -->
+            <div class="
             absolute 
             bottom-0 left-0 
             p-8 md:p-12 
             z-20 
             w-full md:w-3/4 lg:w-2/3
         ">
-            <span
-                class="
+                <span class="
                 text-[0.5em] md:text-[0.8em] text-[#154D41] 
                 font-bold bg-[#8EF0DD] uppercase tracking-widest 
                 inline-block
@@ -47,19 +43,17 @@
                 shadow-sm 
                 px-3 py-1 mb-4
                 ">
-                Latest Insights
-            </span>
-            <h2
-                class="
+                    Latest Insights
+                </span>
+                <h2 class="
                     text-[1.5em] md:text-[2em] 
                     font-extrabold text-white leading-tight tracking-tight 
                     mb-4 
                     group-hover:text-[#8EF0DD] transition-colors duration-300
                 ">
-                <%= latestArticle.title %>
-            </h2>
-            <p
-                class="
+                    <%= latestArticle.title %>
+                </h2>
+                <p class="
                     text-[0.9em] md:text-[1em] 
                     text-white/80 
                     line-clamp-2 md:line-clamp-none 
@@ -68,33 +62,28 @@
                     rounded-xl 
                     -ml-4 mb-8 p-4
                 ">
-                <%= latestArticle.excerpt %>
-            </p>
-            <div class="
+                    <%= latestArticle.excerpt %>
+                </p>
+                <div class="
                 flex items-center 
                 text-sm font-bold 
                 text-[#8EF0DD] 
-                group/link
+                group
+                gap-x-2
             ">
-                <span
-                    class="
+                    <span class="
                         border-b-2 border-[#8EF0DD]/30 
-                        group-hover/link:border-[#8EF0DD] 
+                        group-hover:border-[#8EF0DD] 
                         transition-colors 
                         pb-1
                     ">
-                    Read Insights
-                </span>
-                <svg class="
-                    w-5 h-5 
-                    group-hover/link:translate-x-2 
-                    transition-transform ml-2
-                "
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                </svg>
+                        Read Insights
+                    </span>
+                    <i data-lucide="move-right" class="
+                        text-light-teal 
+                        group-hover:translate-x-2 transition-transform
+                    "></i>
+                </div>
             </div>
         </div>
-    </div>
-</a>
+    </a>

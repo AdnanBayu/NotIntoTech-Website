@@ -1,3 +1,4 @@
+<!-- Zone to input user message -->
 <form id="chat-form" class="
     bg-white 
     flex gap-2 p-2
@@ -9,13 +10,11 @@
     hover:-translate-y-1
 ">
 
-    <input id="chat-input" type="text" placeholder="Ask about tech, competition, business..."
-        class="
+    <input id="chat-input" type="text" placeholder="Ask about tech, competition, business..." class="
             flex-grow
             focus:outline-none
             px-4 py-2
-        "
-        autocomplete="off">
+        " autocomplete="off">
 
     <button type="submit" class="
         bg-dark-teal 
@@ -24,12 +23,7 @@
         transition-transform 
         hover:scale-105 active:scale-95 
     ">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-            class="w-5 h-5 text-white">
-            <line x1="22" y1="2" x2="11" y2="13" />
-            <polyline points="22 2 15 22 11 13 2 9 22 2" />
-        </svg>
+        <i data-lucide="send" class="text-white font-medium"></i>
     </button>
 
 </form>
