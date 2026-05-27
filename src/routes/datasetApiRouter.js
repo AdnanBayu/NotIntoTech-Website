@@ -10,7 +10,7 @@ const {
   handleValidationErrors
 } = require('../middleware/validateDataset');
 
-// PUBLIC API ROUTES (Read-only)
+///////////////////// PUBLIC API ROUTES /////////////////////
 
 /**
  * @swagger
@@ -50,7 +50,6 @@ const {
  *       500:
  *         description: Internal server error
  */
-// GET /api/datasets
 router.get('/api/datasets', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -79,13 +78,9 @@ router.get('/api/datasets', async (req, res) => {
   } catch (error) {
     console.error('Error fetching datasets:', error);
     res.status(500).json({
-      success: false, error: 'Failed to fetch datasets',
+      success: false,
+      error: 'Failed to fetch datasets',
     });
-    // expose error message for debugging
-    // res.status(500).json({
-    //   success: false,
-    //   error: error.message,
-    // })
   }
 });
 
@@ -121,12 +116,14 @@ router.get('/api/datasets', async (req, res) => {
  *       500:
  *         description: Internal server error
  */
-// GET /api/datasets/:id
 router.get('/api/datasets/:id', async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     if (isNaN(id)) {
-      return res.status(400).json({ success: false, error: 'Invalid dataset ID' });
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid dataset ID'
+      });
     }
 
     const dataset = await prisma.datasets.findUnique({
@@ -134,18 +131,27 @@ router.get('/api/datasets/:id', async (req, res) => {
     });
 
     if (!dataset) {
-      return res.status(404).json({ success: false, error: 'Dataset not found' });
+      return res.status(404).json({
+        success: false,
+        error: 'Dataset not found'
+      });
     }
 
-    res.json({ success: true, data: dataset });
+    res.json({
+      success: true,
+      data: dataset
+    });
   } catch (error) {
     console.error('Error fetching dataset:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch dataset' });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch dataset'
+    });
   }
 });
 
 
-// ADMIN API ROUTES - Secured by auth
+///////////////////// ADMIN API ROUTES (Secured by auth) /////////////////////
 
 /**
  * @swagger
@@ -187,7 +193,6 @@ router.get('/api/datasets/:id', async (req, res) => {
  *       500:
  *         description: Failed to create dataset
  */
-// POST /api/datasets
 router.post(
   '/api/datasets',
   isAdmin,
@@ -213,7 +218,10 @@ router.post(
       });
     } catch (error) {
       console.error('Error creating dataset:', error);
-      res.status(500).json({ success: false, error: 'Failed to create dataset' });
+      res.status(500).json({
+        success: false,
+        error: 'Failed to create dataset'
+      });
     }
   }
 );
@@ -247,7 +255,6 @@ router.post(
  *       500:
  *         description: Failed to fetch datasets
  */
-// GET /api/datasets-admin/all
 router.get('/api/datasets-admin/all', isAdmin, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -270,7 +277,10 @@ router.get('/api/datasets-admin/all', isAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching admin datasets:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch datasets' });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch datasets'
+    });
   }
 });
 
@@ -316,7 +326,6 @@ router.get('/api/datasets-admin/all', isAdmin, async (req, res) => {
  *       500:
  *         description: Failed to update dataset
  */
-// PUT /api/datasets/:id
 router.put(
   '/api/datasets/:id',
   isAdmin,
@@ -338,15 +347,16 @@ router.put(
       if (updates.coverImageUrl !== undefined) updatePayload.cover_image_url = updates.coverImageUrl;
       if (updates.fileUrl !== undefined) updatePayload.file_url = updates.fileUrl;
 
-      // Note: schema model has cover_image_url and file_url as the only non-standard snake_case columns.
-
       const dataset = await prisma.datasets.update({
         where: { id },
         data: updatePayload,
       });
 
       if (!dataset) {
-        return res.status(404).json({ success: false, error: 'Dataset not found' });
+        return res.status(404).json({
+          success: false,
+          error: 'Dataset not found'
+        });
       }
 
       res.json({
@@ -356,7 +366,10 @@ router.put(
       });
     } catch (error) {
       console.error('Error updating dataset:', error);
-      res.status(500).json({ success: false, error: 'Failed to update dataset' });
+      res.status(500).json({
+        success: false,
+        error: 'Failed to update dataset'
+      });
     }
   }
 );
@@ -386,7 +399,6 @@ router.put(
  *       500:
  *         description: Failed to delete dataset
  */
-// DELETE /api/datasets/:id
 router.delete('/api/datasets/:id', isAdmin, async (req, res) => {
   try {
     const id = parseInt(req.params.id);
@@ -399,7 +411,10 @@ router.delete('/api/datasets/:id', isAdmin, async (req, res) => {
     });
 
     if (!dataset) {
-      return res.status(404).json({ success: false, error: 'Dataset not found' });
+      return res.status(404).json({
+        success: false,
+        error: 'Dataset not found'
+      });
     }
 
     res.json({
@@ -409,7 +424,10 @@ router.delete('/api/datasets/:id', isAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error('Error deleting dataset:', error);
-    res.status(500).json({ success: false, error: 'Failed to delete dataset' });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to delete dataset'
+    });
   }
 });
 

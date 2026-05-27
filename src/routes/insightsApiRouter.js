@@ -11,7 +11,7 @@ const {
   handleValidationErrors
 } = require('../middleware/validateArticle');
 
-// PUBLIC API ROUTES (Read-only)
+///////////////////// PUBLIC API ROUTES /////////////////////
 
 /**
  * @swagger
@@ -51,7 +51,6 @@ const {
  *       500:
  *         description: Internal server error
  */
-// GET /api/insights
 router.get('/api/insights', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -61,7 +60,7 @@ router.get('/api/insights', async (req, res) => {
     const [articles, count] = await Promise.all([
       prisma.articles.findMany({
         where: { status: 'published' },
-        include: { category_rel: true },
+        include: { category_rel: true, tableau: true },
         orderBy: { published_at: 'desc' },
         skip,
         take: limit,
@@ -69,10 +68,10 @@ router.get('/api/insights', async (req, res) => {
       prisma.articles.count({ where: { status: 'published' } }),
     ]);
 
-    // Flatten category for frontend compatibility if needed
     const formattedArticles = articles.map(article => ({
       ...article,
-      category: article.category_rel ? article.category_rel.name : 'Other'
+      category: article.category_rel ? article.category_rel.name : 'Other',
+      tableau_url: article.tableau ? article.tableau.tableau_url : null
     }));
 
     res.json({
@@ -87,7 +86,10 @@ router.get('/api/insights', async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching articles:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch articles' });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch articles'
+    });
   }
 });
 
@@ -121,16 +123,18 @@ router.get('/api/insights', async (req, res) => {
  *       500:
  *         description: Internal server error
  */
-// GET /api/insights/:slug
 router.get('/api/insights/:slug', async (req, res) => {
   try {
     const article = await prisma.articles.findFirst({
       where: { slug: req.params.slug, status: 'published' },
-      include: { category_rel: true },
+      include: { category_rel: true, tableau: true },
     });
 
     if (!article) {
-      return res.status(404).json({ success: false, error: 'Article not found' });
+      return res.status(404).json({
+        success: false,
+        error: 'Article not found'
+      });
     }
 
     // Increment views
@@ -141,16 +145,22 @@ router.get('/api/insights/:slug', async (req, res) => {
     });
     article.views = newViews;
 
-    // Flatten category
     const data = {
       ...article,
-      category: article.category_rel ? article.category_rel.name : 'Other'
+      category: article.category_rel ? article.category_rel.name : 'Other',
+      tableau_url: article.tableau ? article.tableau.tableau_url : null
     };
 
-    res.json({ success: true, data });
+    res.json({
+      success: true,
+      data
+    });
   } catch (error) {
     console.error('Error fetching article:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch article' });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch article'
+    });
   }
 });
 
@@ -184,7 +194,6 @@ router.get('/api/insights/:slug', async (req, res) => {
  *       500:
  *         description: Internal server error
  */
-// GET /api/insights/category/:category
 router.get('/api/insights/category/:category', async (req, res) => {
   try {
     const articles = await prisma.articles.findMany({
@@ -194,19 +203,26 @@ router.get('/api/insights/category/:category', async (req, res) => {
         },
         status: 'published'
       },
-      include: { category_rel: true },
+      include: { category_rel: true, tableau: true },
       orderBy: { published_at: 'desc' },
     });
 
     const formattedArticles = articles.map(article => ({
       ...article,
-      category: article.category_rel ? article.category_rel.name : 'Other'
+      category: article.category_rel ? article.category_rel.name : 'Other',
+      tableau_url: article.tableau ? article.tableau.tableau_url : null
     }));
 
-    res.json({ success: true, data: formattedArticles });
+    res.json({
+      success: true,
+      data: formattedArticles
+    });
   } catch (error) {
     console.error('Error fetching articles by category:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch articles' });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch articles'
+    });
   }
 });
 
@@ -228,14 +244,20 @@ router.get('/api/categories', async (req, res) => {
     const categories = await prisma.article_categories.findMany({
       orderBy: { name: 'asc' }
     });
-    res.json({ success: true, data: categories });
+    res.json({
+      success: true,
+      data: categories
+    });
   } catch (error) {
     console.error('Error fetching categories:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch categories' });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch categories'
+    });
   }
 });
 
-// ADMIN API ROUTES - Secured by auth
+///////////////////// ADMIN API ROUTES (Secured by auth) /////////////////////
 
 /**
  * @swagger
@@ -292,7 +314,6 @@ router.get('/api/categories', async (req, res) => {
  *       500:
  *         description: Failed to create article
  */
-// POST /api/insights
 router.post(
   '/api/insights',
   isAdmin,
@@ -340,19 +361,23 @@ router.post(
           category_id: categoryId,
           tags: tags || [],
           author: author || 'NITE Team',
-          tableau_url: tableauUrl || null,
           seo_meta_description: seoMetaDescription || excerpt || content.substring(0, 160),
           seo_keywords: seoKeywords || [],
           featured_image: featuredImage || null,
           status: 'draft',
+          // Create the tableau row if a URL was provided
+          ...(tableauUrl ? {
+            tableau: { create: { tableau_url: tableauUrl } }
+          } : {}),
         },
-        include: { category_rel: true }
+        include: { category_rel: true, tableau: true }
       });
 
-      // Flatten category for response
+      // Flatten category and tableau_url for response
       const responseData = {
         ...article,
-        category: article.category_rel ? article.category_rel.name : 'Other'
+        category: article.category_rel ? article.category_rel.name : 'Other',
+        tableau_url: article.tableau ? article.tableau.tableau_url : null
       };
 
       res.status(201).json({
@@ -402,7 +427,6 @@ router.post(
  *       500:
  *         description: Failed to fetch articles
  */
-// GET /api/insights-admin/all
 router.get('/api/insights-admin/all', isAdmin, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -415,7 +439,7 @@ router.get('/api/insights-admin/all', isAdmin, async (req, res) => {
     const [articles, count] = await Promise.all([
       prisma.articles.findMany({
         where,
-        include: { category_rel: true },
+        include: { category_rel: true, tableau: true },
         orderBy: { created_at: 'desc' },
         skip,
         take: limit,
@@ -425,7 +449,8 @@ router.get('/api/insights-admin/all', isAdmin, async (req, res) => {
 
     const formattedArticles = articles.map(article => ({
       ...article,
-      category: article.category_rel ? article.category_rel.name : 'Other'
+      category: article.category_rel ? article.category_rel.name : 'Other',
+      tableau_url: article.tableau ? article.tableau.tableau_url : null
     }));
 
     res.json({
@@ -435,7 +460,10 @@ router.get('/api/insights-admin/all', isAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching admin articles:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch articles' });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch articles'
+    });
   }
 });
 
@@ -497,7 +525,6 @@ router.get('/api/insights-admin/all', isAdmin, async (req, res) => {
  *       500:
  *         description: Failed to update article
  */
-// PUT /api/insights/:id
 router.put(
   '/api/insights/:id',
   isAdmin,
@@ -516,7 +543,6 @@ router.put(
       if (updates.excerpt !== undefined) updatePayload.excerpt = updates.excerpt;
       if (updates.tags !== undefined) updatePayload.tags = updates.tags;
       if (updates.author !== undefined) updatePayload.author = updates.author;
-      if (updates.tableauUrl !== undefined) updatePayload.tableau_url = updates.tableauUrl;
       if (updates.seoMetaDescription !== undefined) updatePayload.seo_meta_description = updates.seoMetaDescription;
       if (updates.seoKeywords !== undefined) updatePayload.seo_keywords = updates.seoKeywords;
       if (updates.featuredImage !== undefined) updatePayload.featured_image = updates.featuredImage;
@@ -530,12 +556,22 @@ router.put(
         updatePayload.category_id = cat.id;
       }
 
+      // Handle tableau_url via the related table
+      if (updates.tableauUrl !== undefined) {
+        updatePayload.tableau = {
+          upsert: {
+            create: { tableau_url: updates.tableauUrl || null },
+            update: { tableau_url: updates.tableauUrl || null, updated_at: new Date() }
+          }
+        };
+      }
+
       updatePayload.updated_at = new Date();
 
       const article = await prisma.articles.update({
         where: { id: req.params.id },
         data: updatePayload,
-        include: { category_rel: true }
+        include: { category_rel: true, tableau: true }
       });
 
       if (!article) {
@@ -544,7 +580,8 @@ router.put(
 
       const responseData = {
         ...article,
-        category: article.category_rel ? article.category_rel.name : 'Other'
+        category: article.category_rel ? article.category_rel.name : 'Other',
+        tableau_url: article.tableau ? article.tableau.tableau_url : null
       };
 
       res.json({
@@ -584,7 +621,6 @@ router.put(
  *       500:
  *         description: Failed to publish article
  */
-// POST /api/insights/:id/publish
 router.post('/api/insights/:id/publish', isAdmin, async (req, res) => {
   try {
     const article = await prisma.articles.update({
@@ -597,7 +633,10 @@ router.post('/api/insights/:id/publish', isAdmin, async (req, res) => {
     });
 
     if (!article) {
-      return res.status(404).json({ success: false, error: 'Article not found' });
+      return res.status(404).json({
+        success: false,
+        error: 'Article not found'
+      });
     }
 
     res.json({
@@ -607,7 +646,10 @@ router.post('/api/insights/:id/publish', isAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error('Error publishing article:', error);
-    res.status(500).json({ success: false, error: 'Failed to publish article' });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to publish article'
+    });
   }
 });
 
@@ -637,7 +679,6 @@ router.post('/api/insights/:id/publish', isAdmin, async (req, res) => {
  *       500:
  *         description: Failed to unpublish article
  */
-// POST /api/insights/:id/unpublish
 router.post('/api/insights/:id/unpublish', isAdmin, async (req, res) => {
   try {
     const article = await prisma.articles.update({
@@ -688,7 +729,6 @@ router.post('/api/insights/:id/unpublish', isAdmin, async (req, res) => {
  *       500:
  *         description: Failed to delete article
  */
-// DELETE /api/insights/:id
 router.delete('/api/insights/:id', isAdmin, async (req, res) => {
   try {
     const article = await prisma.articles.delete({
@@ -706,11 +746,11 @@ router.delete('/api/insights/:id', isAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error('Error deleting article:', error);
-    res.status(500).json({ success: false, error: 'Failed to delete article' });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to delete article'
+    });
   }
 });
-
-// Note: Visualizations specific endpoints /visualizations are omitted here because
-// we rely on the main PUT endpoint with tableauUrl.
 
 module.exports = router;

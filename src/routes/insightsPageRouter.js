@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { prisma } = require('../database/prismaClient');
 
-// Display articles grid
+///////////////////// Display articles grid on page /////////////////////
 router.get('/insights', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -34,7 +34,7 @@ router.get('/insights', async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Error fetching insights list:', error);
+    console.error('Error fetching insights:', error);
     res.render('insights/page-insights', {
       articles: [],
       pagination: { page: 1, pages: 0, total: 0 },
@@ -42,12 +42,12 @@ router.get('/insights', async (req, res) => {
   }
 });
 
-// Display single article
+///////////////////// Display single article page /////////////////////
 router.get('/insights/:slug', async (req, res) => {
   try {
     const article = await prisma.articles.findFirst({
       where: { slug: req.params.slug, status: 'published' },
-      include: { category_rel: true },
+      include: { category_rel: true, tableau: true },
     });
 
     if (!article) {
@@ -66,6 +66,7 @@ router.get('/insights/:slug', async (req, res) => {
 
     article.views = newViews;
     article.category = article.category_rel ? article.category_rel.name : 'Other';
+    article.tableauUrl = article.tableau ? article.tableau.tableau_url : null;
 
     res.render('insights/insights-detail', { article });
   } catch (error) {
