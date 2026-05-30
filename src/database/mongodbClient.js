@@ -8,12 +8,12 @@ const connectDB = async () => {
         if (!url) {
             throw new Error('MONGODB_URI is not defined in environment variables');
         }
-        
+
         if (mongoose.connection.readyState === 0) {
             await mongoose.connect(url, {
                 dbName: 'notintotech-website'
             });
-            console.log('Database is connected to: mongo notintotech-website');
+            // console.log('Database is connected to: mongo notintotech-website');
         }
     } catch (err) {
         console.error('Error connecting to the mongo database:', err.message);

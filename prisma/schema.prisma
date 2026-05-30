@@ -19,17 +19,25 @@ model articles {
   featured_image       String?
   seo_meta_description String?
   seo_keywords         String[]
-  status               String?             @default("draft")
-  views                Int?                @default(0)
-  published_at         DateTime?           @db.Timestamptz(6)
-  created_at           DateTime?           @default(now()) @db.Timestamptz(6)
-  updated_at           DateTime?           @default(now()) @db.Timestamptz(6)
-  category_id          String?             @db.Uuid
-  category_rel         article_categories? @relation(fields: [category_id], references: [id],  onDelete: Cascade)
+  views                Int?                     @default(0)
+  published_at         DateTime?                @db.Timestamptz(6)
+  created_at           DateTime?                @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime?                @default(now()) @db.Timestamptz(6)
+  category_id          String?                  @db.Uuid
+  category_rel         article_categories?      @relation(fields: [category_id], references: [id],  onDelete: Cascade)
   tableau              article_tableau?
+  publish_status       String                   @db.Uuid
+  status_rel           article_status_publish   @relation(fields: [publish_status], references: [id], onDelete: Cascade)
 }
 
 model article_categories {
+  id                  String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                String     @unique
+  created_at          DateTime?  @default(now()) @db.Timestamptz(6)
+  articles            articles[]
+}
+
+model article_status_publish {
   id                  String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name                String     @unique
   created_at          DateTime?  @default(now()) @db.Timestamptz(6)

@@ -1,37 +1,88 @@
 <div>
-    <form id="feedbackForm" action="/feedback-form" method="post" onsubmit="return validateFeedback()">
+    <form 
+        id="feedbackForm" 
+        action="/feedback-form" 
+        method="post" 
+        onsubmit="return validateFeedback()
+    ">
         <div class="mb-5 text-[0.8em] lg:text-[1em]">
-            <label for="feedback-name" class="block mb-2 font-medium text-white">
+            <label 
+                for="feedback-name" 
+                class="block mb-2 font-medium text-white
+            ">
                 Your name
             </label>
-            <input type="text" id="feedback-name" name="feedback-name"
-                class="block w-full focus:border-blue-500 disabled:opacity-50 disabled:pointer-events-none text-neutral-400 placeholder-neutral-500 focus:ring-neutral-600 py-2.5 sm:py-3 px-4"
+            <input 
+                type="text" 
+                id="feedback-name" 
+                name="feedback-name"
+                class="
+                    block 
+                    w-full 
+                    focus:border-blue-500 focus:ring-neutral-600
+                    disabled:opacity-50 disabled:pointer-events-none 
+                    text-neutral-400 placeholder-neutral-50
+                    py-2.5 sm:py-3 px-4
+                "
                 placeholder="Name">
         </div>
 
         <div class="mb-5 sm:mb-4 text-[0.8em] lg:text-[1em]">
-            <label for="feedback-email" class="block mb-2 font-medium text-white">
+            <label 
+                for="feedback-email" 
+                class="block mb-2 font-medium text-white"
+            >
                 Email address
             </label>
-            <input type="email" id="feedback-email" name="feedback-email"
-                class="block w-full rounded-lg focus:border-blue-500 disabled:opacity-50 disabled:pointer-events-none text-neutral-400 placeholder-neutral-500 focus:ring-neutral-600 py-2.5 sm:py-3 px-4"
+            <input 
+                type="email" 
+                id="feedback-email" 
+                name="feedback-email"
+                class="
+                    block 
+                    w-full rounded-lg 
+                    focus:border-blue-500 focus:ring-neutral-600
+                    disabled:opacity-50 disabled:pointer-events-none 
+                    text-neutral-400 placeholder-neutral-500
+                    py-2.5 sm:py-3 px-4
+                "
                 placeholder="Email">
         </div>
 
         <div class="mb-5 sm:mb-4 text-[0.8em] lg:text-[1em]">
-            <label for="feedback-text" class="block mb-2 font-medium text-white">
+            <label 
+                for="feedback-text" 
+                class="block mb-2 font-medium text-white"
+            >
                 Feedback
             </label>
             <div>
-                <textarea id="feedback-text" name="feedback-text" rows="3"
-                    class="block w-full rounded-lg focus:border-blue-500 disabled:opacity-50 disabled:pointer-events-none text-neutral-400 placeholder-neutral-500 focus:ring-neutral-600 py-2.5 sm:py-3 px-4"
-                    placeholder="Leave your feedback here..."></textarea>
+                <textarea 
+                    id="feedback-text" 
+                    name="feedback-text" 
+                    rows="3"
+                    class="
+                        block 
+                        w-full rounded-lg 
+                        focus:border-blue-500 focus:ring-neutral-600
+                        disabled:opacity-50 disabled:pointer-events-none 
+                        text-neutral-400 placeholder-neutral-500
+                        py-2.5 sm:py-3 px-4"
+                    placeholder="Leave your feedback here...">
+                </textarea>
             </div>
         </div>
 
         <div class="mt-6 grid text-[0.9em]">
             <button type="submit"
-                class="bg-white/10 border border-white/20 rounded-full px-8 py-2.5 font-medium text-white transition hover:opacity-90 active:scale-98">
+                class="
+                    border bg-white/10 
+                    border-white/20 
+                    rounded-full 
+                    px-8 py-2.5 
+                    font-medium text-white 
+                    transition hover:opacity-90 active:scale-98
+                ">
                 Submit Feedback
             </button>
         </div>

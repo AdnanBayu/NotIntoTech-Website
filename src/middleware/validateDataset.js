@@ -33,7 +33,6 @@ const validateDatasetCreate = [
     }),
 ];
 
-// Validation rules for dataset updates
 const validateDatasetUpdate = [
   body('title')
     .optional()
@@ -66,7 +65,6 @@ const validateDatasetUpdate = [
     }),
 ];
 
-// Middleware to handle validation errors
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
 

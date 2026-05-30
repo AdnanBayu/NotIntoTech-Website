@@ -4,13 +4,13 @@
 
 ---
 
-## 📌 Overview
+## Overview
 
 Not Into Tech Website is a full-stack web application built with **Node.js + Express** and deployed on **Vercel**. It serves as an organizational hub featuring article publishing, data visualization pages, an AI chatbot (powered by N8N), and a feedback/request system.
 
 ---
 
-## 🚀 Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
@@ -25,7 +25,7 @@ Not Into Tech Website is a full-stack web application built with **Node.js + Exp
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 NotIntoTech-Website/
@@ -70,7 +70,7 @@ NotIntoTech-Website/
 
 ---
 
-## ⚙️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -114,7 +114,7 @@ NotIntoTech-Website/
 
 ---
 
-## 📝 Available Scripts
+## Available Scripts
 
 | Command | Description |
 |---|---|
@@ -126,7 +126,7 @@ NotIntoTech-Website/
 
 ---
 
-## 🗄️ Database
+## Database
 
 The project uses **two databases**:
 
@@ -135,7 +135,7 @@ The project uses **two databases**:
 
 ---
 
-## 📦 Storage
+## Storage
 
 The project uses **Cloudflare R2** for object storage:
 
@@ -143,13 +143,13 @@ The project uses **Cloudflare R2** for object storage:
 
 ---
 
-## 🤖 AI Chatbot
+## AI Chatbot
 
 The website includes an AI-powered chatbot. The Express server acts as a **proxy** between the client and an [N8N](https://n8n.io/) webhook, keeping the webhook URL private and managing session state. The proxy endpoint is available at `POST /api/chat`.
 
 ---
 
-## 🌐 Deployment
+## Deployment
 
 This project is deployed on **Vercel** using a serverless Node.js setup.
 
@@ -164,13 +164,13 @@ vercel --prod
 
 ---
 
-## 🤝 Contributing
+## Contributor
 
-This is an internal organization project. If you are a team member and want to contribute:
+This project was built by **Not Into Tech** team for branding purposes.
 
-1. Create a new branch from `main`
-2. Make your changes
-3. Open a Pull Request with a clear description of what you changed
+| Name | Role | GitHub |
+|---|---|---|
+| Adnan Bayu | Founding Partner | [@AdnanBayu](https://github.com/AdnanBayu) |
 
 ---
 

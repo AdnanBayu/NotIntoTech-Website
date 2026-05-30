@@ -48,8 +48,6 @@ const validateArticleCreate = [
     .isArray().withMessage('Keywords must be an array'),
 ];
 
-
-// Validation rules for article updates
 const validateArticleUpdate = [
   body('title')
     .optional()
@@ -72,7 +70,6 @@ const validateArticleUpdate = [
     .isLength({ max: 500 }).withMessage('Excerpt must be max 500 characters'),
 ];
 
-// Middleware to handle validation errors
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
 

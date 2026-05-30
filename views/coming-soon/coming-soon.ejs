@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../components/head', { text: 'Coming Soon' }) %>
+
+    <body class="bg-[#154D41]">
+
+        <!-- Content Wrapper -->
+        <div class="relative z-20">
+
+            <!-- Header Website -->
+            <section>
+                <%- include('../components/header') %>
+            </section>
+
+            <!-- Main Content -->
+            <section>
+                <canvas id="noiseCanvas" class="fixed top-0 left-0 w-full h-full z-0 opacity-40"></canvas>
+
+                <main class="
+                        relative flex flex-col z-10 
+                        items-center justify-center px-6 py-12
+                        min-h-screen
+                        pointer-events-none
+                    ">
+                    <!-- Main Text -->
+                    <div class="
+                        -mt-6 sm:-mt-10 md:-mt-14 px-4 mb-15
+                        relative z-20
+                    ">
+                        <h2 class="text-2xl sm:text-3xl md:text-5xl font-bold mb-3 text-white drop-shadow-lg">
+                            Coming <span class="text-emerald-500 italic">Soon</span>
+                        </h2>
+                        <p class="max-w-md mx-auto text-slate-400 text-xs sm:text-sm md:text-base leading-relaxed">
+                            This directory is currently under construction. <br class="hidden sm:block">
+                            Please check back later for the latest updates.
+                        </p>
+                    </div>
+
+                    <!-- Back to Home -->
+                    <div class="
+                        mt-12 md:mt-16 
+                        pointer-events-auto
+                    ">
+                        <a href="/" class="
+                                flex 
+                                items-center gap-3 
+                                text-emerald-500 font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] 
+                                hover:text-emerald-300 transition-all duration-300
+                            ">
+                            Back to Home
+                        </a>
+                    </div>
+                </main>
+            </section>
+
+        </div>
+
+        <script src="script.js"></script>
+        <%- include('script-animation') %>
+
+    </body>
+
+</html>
