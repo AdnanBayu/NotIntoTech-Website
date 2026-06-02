@@ -36,23 +36,20 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="mt-6 flex justify-center md:justify-start">
-                            <%- include('../components/button-white', {text:'Request Dataset', link:'/request'}) %>
-                        </div>
                     </header>
 
                     <!-- Main Content -->
-                    
+
                     <!-- Featured Dataset -->
                     <% if (datasets && datasets.length> 0) { %>
                         <%- include('./components/featured-dataset', {datasets: datasets}) %>
-                    <% } %>
+                            <% } %>
 
-                    <!-- Dataset Card Grid -->
-                    <%- include('./components/datasets-grid', {datasets: datasets}) %>
+                                <!-- Dataset Card Grid -->
+                                <%- include('./components/datasets-grid', {datasets: datasets}) %>
 
-                    <!-- Pagination -->
-                    <%- include('./components/pagination', {pagination: pagination}) %>
+                                    <!-- Pagination -->
+                                    <%- include('./components/pagination', {pagination: pagination}) %>
                 </main>
             </section>
 

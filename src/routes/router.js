@@ -8,10 +8,8 @@ const profilePageRoutes = require('./pageRoute/profilePageRouter');
 const insightsPageRoutes = require('./pageRoute/insightsPageRouter');
 const datasetPageRoutes = require('./pageRoute/datasetPageRouter');
 const chatbotPageRoutes = require('./pageRoute/chatbotPageRouter');
-const requestPageRoutes = require('./pageRoute/requestPageRouter');
 const dashboardPageRoutes = require('./pageRoute/dashboardPageRouter');
 
-const requestformRoutes = require('./apiRoute/requestformRouter');
 const feedbackformRoutes = require('./apiRoute/feedbackformRouter');
 
 const insightsApiRoutes = require('./apiRoute/insightsApiRouter');
@@ -21,7 +19,6 @@ const uploadApiRoutes = require('./apiRoute/uploadR2ApiRouter');
 
 
 router.use('/', homePageRoutes);
-router.use('/', requestPageRoutes);
 router.use('/', profilePageRoutes);
 router.use('/', insightsPageRoutes);
 router.use('/', datasetPageRoutes);
@@ -31,7 +28,6 @@ router.use('/', comingsoonPageRoutes);
 router.use('/', errorPageRoutes);
 
 router.use('/', feedbackformRoutes);
-router.use('/', requestformRoutes);
 
 router.use('/', insightsApiRoutes);
 router.use('/', datasetApiRoutes);

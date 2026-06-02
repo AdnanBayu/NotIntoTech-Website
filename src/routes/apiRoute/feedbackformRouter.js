@@ -1,9 +1,9 @@
 // Router for feedback form submission.
 // Business logic lives in feedbackController.js.
 
-const express            = require('express');
-const router             = express.Router();
-const feedbackController = require('../../controllers/feedbackController');
+const express = require('express');
+const router = express.Router();
+const feedbackController = require('../../controllers/feedbackFormController');
 
 /**
  * @swagger
