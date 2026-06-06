@@ -1,10 +1,10 @@
 // Router for file uploads to Cloudflare R2 (or local fallback).
 // All multer config, S3 client setup, and upload logic live in uploadController.js.
 
-const express            = require('express');
-const router             = express.Router();
-const { isAdmin }        = require('../../middleware/authMiddleware');
-const uploadController   = require('../../controllers/uploadController');
+const express = require('express');
+const router = express.Router();
+const { isAdmin } = require('../../middleware/authMiddleware');
+const uploadController = require('../../controllers/uploadController');
 
 /**
  * @swagger

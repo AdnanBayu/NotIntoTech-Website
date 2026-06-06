@@ -38,7 +38,7 @@ const fileFilter = (req, file, cb) => {
   if (ALLOWED_EXTENSIONS.includes(ext)) {
     cb(null, true);
   } else {
-    cb(new Error('Unsupported file extension. Allowed: images and standard document/dataset formats.'));
+    cb(new Error('Unsupported file extension.'));
   }
 };
 
@@ -48,7 +48,7 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
 });
 
-///////////////////// Helpers /////////////////////
+///////////////////// Helpers Reformat URL /////////////////////
 
 function formatPublicUrl(urlBase, filename) {
   if (!urlBase) return `/uploads/${filename}`;
@@ -70,16 +70,26 @@ exports.uploadFile = (req, res) => {
   upload.single('file')(req, res, async function (err) {
     if (err instanceof multer.MulterError) {
       console.error('Multer error:', err);
-      return res.status(400).json({ success: false, error: `Upload error: ${err.message}` });
+      return res.status(400).json({
+        success: false,
+        error: `Upload error: ${err.message}`
+      });
     } else if (err) {
       console.error('Upload error:', err);
-      return res.status(400).json({ success: false, error: err.message });
+      return res.status(400).json({
+        success: false,
+        error: err.message
+      });
     }
 
     if (!req.file) {
-      return res.status(400).json({ success: false, error: 'No file uploaded' });
+      return res.status(400).json({
+        success: false,
+        error: 'No file uploaded'
+      });
     }
 
+    // create auto generated filename to prevent file collision in server and for security reason
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
     const ext = path.extname(req.file.originalname).toLowerCase();
     const filename = uniqueSuffix + ext;
@@ -92,14 +102,12 @@ exports.uploadFile = (req, res) => {
         let publicUrlBase = '';
 
         if (type === 'article') {
-          bucketName = process.env.CLOUDFLARE_R2_ARTICLE_BUCKET_NAME || process.env.CLOUDFLARE_R2_BUCKET_NAME;
-          publicUrlBase = process.env.CLOUDFLARE_R2_ARTICLE_PUBLIC_URL || process.env.CLOUDFLARE_R2_PUBLIC_URL;
+          bucketName = process.env.CLOUDFLARE_R2_ARTICLE_BUCKET_NAME;
+          publicUrlBase = process.env.CLOUDFLARE_R2_ARTICLE_PUBLIC_URL;
         } else {
-          bucketName = process.env.CLOUDFLARE_R2_DATASET_BUCKET_NAME || process.env.CLOUDFLARE_R2_BUCKET_NAME;
-          publicUrlBase = process.env.CLOUDFLARE_R2_DATASET_PUBLIC_URL || process.env.CLOUDFLARE_R2_PUBLIC_URL;
+          bucketName = process.env.CLOUDFLARE_R2_DATASET_BUCKET_NAME;
+          publicUrlBase = process.env.CLOUDFLARE_R2_DATASET_PUBLIC_URL;
         }
-
-        if (!bucketName) bucketName = process.env.CLOUDFLARE_R2_BUCKET_NAME || 'notintotech-datasets';
 
         // Resolve content type
         let contentType = req.file.mimetype || 'application/octet-stream';
@@ -127,8 +135,10 @@ exports.uploadFile = (req, res) => {
           fileName: req.file.originalname,
           size: req.file.size,
         });
-      } else {
-        // Local disk fallback
+      }
+
+      // Local disk fallback
+      else {
         const filePath = path.join(uploadDir, filename);
         fs.writeFileSync(filePath, req.file.buffer);
         const fileUrl = `/uploads/${filename}`;
@@ -136,12 +146,13 @@ exports.uploadFile = (req, res) => {
 
         return res.json({
           success: true,
-          message: 'File uploaded to local storage (R2 Fallback)',
+          message: 'File uploaded to local storage (Fallback)',
           fileUrl,
           fileName: req.file.originalname,
           size: req.file.size,
         });
       }
+
     } catch (storageErr) {
       console.error('File storage/upload error:', storageErr);
       return res.status(500).json({ success: false, error: `Failed to save file: ${storageErr.message}` });

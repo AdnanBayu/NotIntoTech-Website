@@ -93,7 +93,6 @@
     --ease-out: cubic-bezier(0, 0, 0.2, 1);
     --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
     --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    --animate-bounce: bounce 1s infinite;
     --blur-sm: 8px;
     --blur-md: 12px;
     --blur-lg: 16px;
@@ -282,9 +281,6 @@
   .inset-y-0 {
     inset-block: calc(var(--spacing) * 0);
   }
-  .-top-8 {
-    top: calc(var(--spacing) * -8);
-  }
   .top-0 {
     top: calc(var(--spacing) * 0);
   }
@@ -296,9 +292,6 @@
   }
   .top-\[70px\] {
     top: 70px;
-  }
-  .-right-30 {
-    right: calc(var(--spacing) * -30);
   }
   .right-0 {
     right: calc(var(--spacing) * 0);
@@ -520,6 +513,9 @@
   .h-full {
     height: 100%;
   }
+  .h-screen {
+    height: 100vh;
+  }
   .max-h-\[90vh\] {
     max-height: 90vh;
   }
@@ -641,14 +637,8 @@
     --tw-scale-z: 100%;
     scale: var(--tw-scale-x) var(--tw-scale-y);
   }
-  .rotate-\[-12deg\] {
-    rotate: -12deg;
-  }
   .transform {
     transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
-  }
-  .animate-bounce {
-    animation: var(--animate-bounce);
   }
   .animate-pulse {
     animation: var(--animate-pulse);
@@ -812,6 +802,9 @@
   }
   .overflow-y-auto {
     overflow-y: auto;
+  }
+  .overflow-y-scroll {
+    overflow-y: scroll;
   }
   .scroll-smooth {
     scroll-behavior: smooth;
@@ -1280,14 +1273,14 @@
   .pt-4 {
     padding-top: calc(var(--spacing) * 4);
   }
+  .pt-5 {
+    padding-top: calc(var(--spacing) * 5);
+  }
   .pt-8 {
     padding-top: calc(var(--spacing) * 8);
   }
   .pt-12 {
     padding-top: calc(var(--spacing) * 12);
-  }
-  .pt-20 {
-    padding-top: calc(var(--spacing) * 20);
   }
   .pr-3 {
     padding-right: calc(var(--spacing) * 3);
@@ -1588,9 +1581,6 @@
   }
   .opacity-40 {
     opacity: 40%;
-  }
-  .opacity-50 {
-    opacity: 50%;
   }
   .opacity-100 {
     opacity: 100%;
@@ -2256,11 +2246,6 @@
       -webkit-line-clamp: unset;
     }
   }
-  .md\:block {
-    @media (width >= 48rem) {
-      display: block;
-    }
-  }
   .md\:flex {
     @media (width >= 48rem) {
       display: flex;
@@ -2783,16 +2768,6 @@ html {
 @keyframes pulse {
   50% {
     opacity: 0.5;
-  }
-}
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(-25%);
-    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-  }
-  50% {
-    transform: none;
-    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
   }
 }
 @layer properties {

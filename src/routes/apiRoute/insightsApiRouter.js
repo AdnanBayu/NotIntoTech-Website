@@ -2,10 +2,10 @@
 // All @swagger JSDoc comments are kept here so Swagger auto-discovery still works.
 // Business logic lives in insightsController.js — this file only wires routes + middleware.
 
-const express            = require('express');
-const router             = express.Router();
-const { isAdmin }        = require('../../middleware/authMiddleware');
-const sanitizeArticle    = require('../../middleware/sanitizeArticle');
+const express = require('express');
+const router = express.Router();
+const { isAdmin } = require('../../middleware/authMiddleware');
+const sanitizeArticle = require('../../middleware/sanitizeArticle');
 const {
   validateArticleCreate,
   validateArticleUpdate,

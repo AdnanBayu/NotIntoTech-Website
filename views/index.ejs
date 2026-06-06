@@ -15,9 +15,8 @@
             <!-- Main Content -->
             <section>
                 <main>
-
                     <!-- website main cta -->
-                    <section class="relative min-h-screen flex items-center justify-center pt-20 mt-5">
+                    <section class="relative min-h-screen flex items-center justify-center pt-5 mt-5">
 
                         <!-- background elements -->
                         <div class="absolute inset-0 z-0">
@@ -29,7 +28,8 @@
                             <div class="absolute inset-0 opacity-40 pointer-events-none"></div>
                         </div>
 
-                        <div class="relative z-10 max-w-4xl mx-auto px-6 flex flex-col items-center text-center">
+                        <div id="main-cta-target"
+                            class="relative z-10 max-w-4xl mx-auto px-6 flex flex-col items-center text-center">
                             <!-- main heading -->
                             <div class="relative inline-block">
                                 <h1
@@ -41,12 +41,6 @@
                                     class="text-xl md:text-4xl text-white leading-tight font-bold tracking-tight hover:text-light-blue mb-8">
                                     No Problem, We Are!
                                 </h2>
-
-                                <!-- floating icon -->
-                                <div class="absolute -top-8 -right-30 p-3 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 rotate-[-12deg] animate-pulse hidden md:block"
-                                    style="animation-duration: 5s;">
-                                    <i data-lucide="coffee" class="text-white/40"></i>
-                                </div>
                             </div>
 
                             <h3
@@ -56,15 +50,10 @@
                             </h3>
 
                             <!-- CTA buttons -->
-                            <div class="flex flex-col md:flex-row gap-5 w-full md:w-auto items-center">
+                            <div id="button-cta" class="flex flex-col md:flex-row gap-5 w-full md:w-auto items-center">
                                 <%- include('components/button-white', {text:'Read Our Insights', link:'/insights'}) %>
                                     <%- include('components/button-white', {text:'See Our Products', link:'#products'})
                                         %>
-                            </div>
-
-                            <!-- Scroll Down Indicator -->
-                            <div class="mt-20 opacity-50 animate-bounce flex justify-center">
-                                <i data-lucide="chevrons-down" class="text-white/40"></i>
                             </div>
 
                         </div>
@@ -74,16 +63,22 @@
                     <!-- NOT YET APPLICABLE -->
 
                     <!-- chatbot section -->
-                    <%- include('index-sections/chatbot') %>
+                    <div id="chatbot-scroll-target">
+                        <%- include('index-sections/chatbot') %>
+                    </div>
 
-                        <!-- product section -->
+                    <!-- product section -->
+                    <div id="product-scroll-target">
                         <%- include('index-sections/product') %>
+                    </div>
 
-                            <!-- partnership section -->
-                            <%- include('index-sections/partnership') %>
+                    <!-- partnership section -->
+                    <%- include('index-sections/partnership') %>
 
-                                <!-- Contact & Feedback Form -->
-                                <%- include('index-sections/contact-feedback') %>
+                        <!-- Contact & Feedback Form -->
+                        <div id="contact-scroll-target">
+                            <%- include('index-sections/contact-feedback') %>
+                        </div>
                 </main>
             </section>
 
@@ -94,13 +89,8 @@
 
         </div>
 
-        <script src="script.js"></script>
-        <script src="https://unpkg.com/lucide@latest"></script>
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                lucide.createIcons();
-            });
-        </script>
+        <%- include('components/scripts') %>
+            <script src="animation-scripts/index-page.js"></script>
 
     </body>
 

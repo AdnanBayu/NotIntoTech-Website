@@ -2,9 +2,9 @@
 // All @swagger JSDoc comments are kept here so Swagger auto-discovery still works.
 // Business logic lives in datasetController.js — this file only wires routes + middleware.
 
-const express           = require('express');
-const router            = express.Router();
-const { isAdmin }       = require('../../middleware/authMiddleware');
+const express = require('express');
+const router = express.Router();
+const { isAdmin } = require('../../middleware/authMiddleware');
 const {
   validateDatasetCreate,
   validateDatasetUpdate,
