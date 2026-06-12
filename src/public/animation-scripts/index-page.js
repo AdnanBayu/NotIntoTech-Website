@@ -16,34 +16,37 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     animate($chatbot, {
-        scale: [0.6, 1],
-        opacity: [0.3, 1],
+        scale: [0.8, 1],
+        opacity: [0.7, 1],
         duration: 2000,
         ease: 'outQuad',
         autoplay: onScroll({
             target: $chatbot,
+            sync: 0.4,
             debug
         })
     });
 
     animate($product, {
-        scale: [0.6, 1],
-        opacity: [0.3, 1],
+        scale: [0.8, 1],
+        opacity: [0.7, 1],
         duration: 2000,
         ease: 'outQuad',
         autoplay: onScroll({
             target: $product,
+            sync: 0.4,
             debug
         })
     });
 
     animate($contact, {
-        scale: [0.6, 1],
-        opacity: [0.3, 1],
+        scale: [0.8, 1],
+        opacity: [0.7, 1],
         duration: 2000,
         ease: 'outQuad',
         autoplay: onScroll({
             target: $contact,
+            sync: 0.4,
             debug
         })
     });
