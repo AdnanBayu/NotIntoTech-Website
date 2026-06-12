@@ -1,0 +1,30 @@
+<script>
+    let activeTab = 'datasets';
+
+    // Tab switcher
+    function switchTab(tab) {
+        activeTab = tab;
+
+        const tabDatasets = document.getElementById('tab-datasets');
+        const tabArticles = document.getElementById('tab-articles');
+
+        const btnDatasets = document.getElementById('tab-btn-datasets');
+        const btnArticles = document.getElementById('tab-btn-articles');
+
+        if (!tabDatasets || !tabArticles || !btnDatasets || !btnArticles) return;
+
+        if (tab === 'datasets') {
+            tabDatasets.classList.remove('hidden');
+            tabArticles.classList.add('hidden');
+
+            btnDatasets.className = "flex-1 py-2.5 px-4 text-center rounded-lg text-sm font-bold transition-all duration-300 bg-[#8EF0DD] text-[#154D41]";
+            btnArticles.className = "flex-1 py-2.5 px-4 text-center rounded-lg text-sm font-bold transition-all duration-300 text-white/60 hover:text-white hover:bg-white/5";
+        } else {
+            tabDatasets.classList.add('hidden');
+            tabArticles.classList.remove('hidden');
+
+            btnArticles.className = "flex-1 py-2.5 px-4 text-center rounded-lg text-sm font-bold transition-all duration-300 bg-[#8EF0DD] text-[#154D41]";
+            btnDatasets.className = "flex-1 py-2.5 px-4 text-center rounded-lg text-sm font-bold transition-all duration-300 text-white/60 hover:text-white hover:bg-white/5";
+        }
+    }
+</script>

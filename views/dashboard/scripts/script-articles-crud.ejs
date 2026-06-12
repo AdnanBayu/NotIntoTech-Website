@@ -8,7 +8,7 @@
     tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-white/40">Loading articles...</td></tr>';
 
     // Call the ADMIN endpoint to get both drafts and published articles
-    fetch('/api/insights-admin/all?limit=100', {
+    fetch('/api/insights-admin/all?limit=50', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${adminToken}`

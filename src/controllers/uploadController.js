@@ -29,7 +29,7 @@ if (isR2Configured) {
   });
 }
 
-///////////////////// Multer configuration /////////////////////
+///////////////////// Multer configuration (helper file upload) /////////////////////
 
 const ALLOWED_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.csv', '.xlsx', '.xls', '.json', '.txt', '.pdf'];
 

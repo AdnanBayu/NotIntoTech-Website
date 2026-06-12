@@ -1,5 +1,6 @@
 <script>
   // DATASETS LOGIC (CRUD)
+  let allDatasets = [];
 
   // Get datasets on db
   function fetchDatasets() {
@@ -15,6 +16,7 @@
         if (!data.success) throw new Error(data.error || 'Failed to fetch datasets');
 
         const datasets = data.data || [];
+        allDatasets = datasets;
         if (datasets.length === 0) {
           tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-white/40">No datasets found. Click "Add Dataset" to upload one.</td></tr>';
           return;
@@ -39,10 +41,10 @@
               </td>
               <td class="p-4 text-right">
                 <div class="flex justify-end gap-2">
-                  <button onclick="editDataset(${ds.id}, '${escapeQuote(ds.title)}', '${escapeQuote(ds.description || '')}', '${escapeQuote(ds.cover_image_url || '')}', '${escapeQuote(ds.file_url)}')" class="p-2 border border-white/10 hover:border-[#8EF0DD]/50 hover:bg-[#8EF0DD]/10 text-white/70 hover:text-white rounded-lg transition">
+                  <button onclick="editDataset('${ds.id}')" class="p-2 border border-white/10 hover:border-[#8EF0DD]/50 hover:bg-[#8EF0DD]/10 text-white/70 hover:text-white rounded-lg transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                   </button>
-                  <button onclick="deleteDataset(${ds.id}, '${escapeQuote(ds.title)}')" class="p-2 border border-white/10 hover:border-red-500/50 hover:bg-red-500/10 text-white/70 hover:text-white rounded-lg transition">
+                  <button onclick="deleteDataset('${ds.id}')" class="p-2 border border-white/10 hover:border-red-500/50 hover:bg-red-500/10 text-white/70 hover:text-white rounded-lg transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                   </button>
                 </div>
@@ -97,14 +99,17 @@
   }
 
   // Helper edit dataset store value
-  function editDataset(id, title, description, coverImageUrl, fileUrl) {
+  function editDataset(id) {
+    const ds = allDatasets.find(item => item.id === id);
+    if (!ds) return;
+
     openDatasetModal();
     document.getElementById('dataset-modal-title').innerText = 'Edit Dataset';
-    document.getElementById('dataset-id').value = id;
-    document.getElementById('ds-title').value = title;
-    document.getElementById('ds-desc').value = description;
-    document.getElementById('ds-cover-url').value = coverImageUrl;
-    document.getElementById('ds-file-url').value = fileUrl;
+    document.getElementById('dataset-id').value = ds.id;
+    document.getElementById('ds-title').value = ds.title;
+    document.getElementById('ds-desc').value = ds.description || '';
+    document.getElementById('ds-cover-url').value = ds.cover_image_url || '';
+    document.getElementById('ds-file-url').value = ds.file_url || '';
   }
 
   // Submit dataset form
@@ -159,8 +164,10 @@
   }
 
   // Delete dataset
-  function deleteDataset(id, title) {
-    if (!confirm(`Are you absolutely sure you want to delete dataset: "${title}"?`)) return;
+  function deleteDataset(id) {
+    const ds = allDatasets.find(item => item.id === id);
+    if (!ds) return;
+    if (!confirm(`Are you absolutely sure you want to delete dataset: "${ds.title}"?`)) return;
 
     // Fetch delete dataset api
     fetch(`/api/datasets/${id}`, {
