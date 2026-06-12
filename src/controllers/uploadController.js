@@ -89,10 +89,11 @@ exports.uploadFile = (req, res) => {
       });
     }
 
-    // create auto generated filename to prevent file collision in server and for security reason
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    // Create filename as "actual file name + date upload" with unique suffix to prevent collision
     const ext = path.extname(req.file.originalname).toLowerCase();
-    const filename = uniqueSuffix + ext;
+    const cleanName = path.basename(req.file.originalname, ext).replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-_]/g, '') || 'file';
+    const now = new Date();
+    const filename = `${cleanName}-${now.toISOString().split('T')[0]}-${now.getTime()}${ext}`;
 
     try {
       if (isR2Configured && s3Client) {
